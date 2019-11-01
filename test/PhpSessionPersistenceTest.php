@@ -69,14 +69,6 @@ class PhpSessionPersistenceTest extends TestCase
             mkdir($this->sessionSavePath);
         }
 
-        // remove old session test files if any
-        $files = glob("{$this->sessionSavePath}/sess_*");
-        if ($files) {
-            foreach ($files as $file) {
-                unlink($file);
-            }
-        }
-
         $this->persistence = new PhpSessionPersistence();
     }
 
@@ -84,6 +76,14 @@ class PhpSessionPersistenceTest extends TestCase
     {
         session_write_close();
         $this->restoreOriginalSessionIniSettings($this->originalSessionSettings);
+
+        // remove old session test files if any
+        $files = glob("{$this->sessionSavePath}/sess_*");
+        if ($files) {
+            foreach ($files as $file) {
+                unlink($file);
+            }
+        }
     }
 
     public function startSession(string $id = null, array $options = [])
@@ -232,7 +232,7 @@ class PhpSessionPersistenceTest extends TestCase
     {
         $request = $this->createSessionCookieRequest('use-this-id');
         $session = $this->persistence->initializeSessionFromRequest($request);
-        $session->set('foo', __METHOD__ . time());
+        $session->set('foo', __METHOD__);
 
         $response = new Response();
         $returnedResponse = $this->persistence->persistSession($session, $response);
