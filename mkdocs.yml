@@ -1,9 +1,8 @@
 docs_dir: docs/book
 site_dir: docs/html
-pages:
+nav:
     - index.md
     - Introduction: intro.md
-site_name: zend-expressive-session-ext
-site_description: 'PHP ext-session persistence adapter for zend-expressive-session'
-repo_url: 'https://github.com/zendframework/zend-expressive-session-ext'
-copyright: 'Copyright (c) 2017 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+site_name: mezzio-session-ext
+site_description: 'PHP ext-session persistence adapter for mezzio-session'
+repo_url: 'https://github.com/mezzio/mezzio-session-ext'
