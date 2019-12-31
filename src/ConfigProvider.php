@@ -1,13 +1,14 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-session-ext for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-session-ext/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-session-ext for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-session-ext/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-session-ext/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\Session\Ext;
+namespace Mezzio\Session\Ext;
 
-use Zend\Expressive\Session\SessionPersistenceInterface;
+use Mezzio\Session\SessionPersistenceInterface;
 
 class ConfigProvider
 {
@@ -23,6 +24,10 @@ class ConfigProvider
         return [
             'aliases' => [
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
+
+                // Legacy Zend Framework aliases
+                \Zend\Expressive\Session\SessionPersistenceInterface::class => SessionPersistenceInterface::class,
+                \Zend\Expressive\Session\Ext\PhpSessionPersistence::class => PhpSessionPersistence::class,
             ],
             'invokables' => [
                 PhpSessionPersistence::class => PhpSessionPersistence::class,
