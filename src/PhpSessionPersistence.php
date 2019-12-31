@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-session-ext for the canonical source repository
- * @copyright Copyright (c) 2017-2018 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-session-ext/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-session-ext for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-session-ext/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-session-ext/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\Session\Ext;
+namespace Mezzio\Session\Ext;
 
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
+use Mezzio\Session\Session;
+use Mezzio\Session\SessionCookiePersistenceInterface;
+use Mezzio\Session\SessionInterface;
+use Mezzio\Session\SessionPersistenceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Session\Session;
-use Zend\Expressive\Session\SessionCookiePersistenceInterface;
-use Zend\Expressive\Session\SessionInterface;
-use Zend\Expressive\Session\SessionPersistenceInterface;
 
 use function array_merge;
 use function bin2hex;
