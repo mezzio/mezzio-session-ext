@@ -6,15 +6,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#5](https://github.com/zendframework/zend-expressive-session-ext/pull/5) adds
-  support for the ^1.0.0alpha1 release of zend-expressive-session.
+- [zendframework/zend-expressive-session-ext#5](https://github.com/zendframework/zend-expressive-session-ext/pull/5) adds
+  support for the ^1.0.0alpha1 release of mezzio-session.
 
 ## 0.1.2 - 2017-12-12
 
 ### Added
 
-- [#3](https://github.com/zendframework/zend-expressive-session-ext/pull/3) adds
-  support for the 1.0-dev and 1.0 releases of zend-expressive-session.
+- [zendframework/zend-expressive-session-ext#3](https://github.com/zendframework/zend-expressive-session-ext/pull/3) adds
+  support for the 1.0-dev and 1.0 releases of mezzio-session.
 
 ### Changed
 
