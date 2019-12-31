@@ -1,26 +1,26 @@
-# zend-expressive-session-ext
+# mezzio-session-ext
 
 This component provides a persistence adapter for use with
-[zend-expressive-session](https://docs.zendframework.com/zend-expressive-session/).
+[mezzio-session](https://docs.mezzio.dev/mezzio-session/).
 
 ## Installation:
 
 Run the following to install this library:
 
 ```bash
-$ composer require zendframework/zend-expressive-session-ext
+$ composer require mezzio/mezzio-session-ext
 ```
 
 ## Configuration
 
-If your application uses the [zend-component-installer](https://docs.zendframework.com/zend-component-installer)
+If your application uses the [laminas-component-installer](https://docs.laminas.dev/laminas-component-installer)
 Composer plugin, your configuration is complete; the shipped
-`Zend\Expressive\Session\Ext\ConfigProvider` registers the
-`Zend\Expressive\Session\Ext\PhpSessionPersistence` service, as well as an alias
-to it under the name `Zend\Expressive\Session\SessionPersistenceInterface`.
+`Mezzio\Session\Ext\ConfigProvider` registers the
+`Mezzio\Session\Ext\PhpSessionPersistence` service, as well as an alias
+to it under the name `Mezzio\Session\SessionPersistenceInterface`.
 
-Otherwise, you will need to map `Zend\Expressive\Session\SessionPersistenceInterface`
-to `Zend\Expressive\Session\Ext\PhpSessionPersistence` in your dependency
+Otherwise, you will need to map `Mezzio\Session\SessionPersistenceInterface`
+to `Mezzio\Session\Ext\PhpSessionPersistence` in your dependency
 injection container.
 
 ### Enabling non locking sessions
@@ -55,7 +55,7 @@ overwrite any previous change.
 
 ## Usage
 
-In most cases, usage will be via `Zend\Expressive\Session\SessionMiddleware`,
+In most cases, usage will be via `Mezzio\Session\SessionMiddleware`,
 and will not require direct access to the service on your part. If you do need
-to use it, please refer to the zend-expressive-session [session persistence
-documentation](https://docs.zendframework.com/zend-expressive-session/persistence/).
+to use it, please refer to the mezzio-session [session persistence
+documentation](https://docs.mezzio.dev/mezzio-session/persistence/).
