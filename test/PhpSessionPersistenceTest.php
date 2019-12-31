@@ -1,22 +1,23 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-session-ext for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-session-ext/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-session-ext for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-session-ext/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-session-ext/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Session\Ext;
+namespace MezzioTest\Session\Ext;
 
 use Dflydev\FigCookies\Cookie;
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\ServerRequest;
+use Mezzio\Session\Ext\PhpSessionPersistence;
+use Mezzio\Session\Session;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
-use Zend\Expressive\Session\Ext\PhpSessionPersistence;
-use Zend\Expressive\Session\Session;
 
 /**
  * @runTestsInSeparateProcesses
