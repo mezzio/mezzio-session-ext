@@ -10,13 +10,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#12](https://github.com/zendframework/zend-expressive-session-ext/pull/12) updates the `PhpSessionPersistence` class such that it is now responsible for
+- [zendframework/zend-expressive-session-ext#12](https://github.com/zendframework/zend-expressive-session-ext/pull/12) updates the `PhpSessionPersistence` class such that it is now responsible for
   emitting the various cache limiter headers (`Expires`, `Cache-Control`, `Last-Modified`, and `Pragma`) normally
   emitted by ext-session and controlled by the `session.cache_limiter` and `session.cache_expire` INI settings.
   This approach ensures that those headers are not overwritten by ext-session if set elsewhere in your
   application.
 
-- [#9](https://github.com/zendframework/zend-expressive-session-ext/pull/9) swaps a call to `session_commit` to `session_write_close` withing `PhpSessionPersistence`,
+- [zendframework/zend-expressive-session-ext#9](https://github.com/zendframework/zend-expressive-session-ext/pull/9) swaps a call to `session_commit` to `session_write_close` withing `PhpSessionPersistence`,
   as the former is an alias for the latter.
 
 ### Deprecated
@@ -29,7 +29,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#13](https://github.com/zendframework/zend-expressive-session-ext/pull/13) fixes an issue whereby a new session cookie is not always sent
+- [zendframework/zend-expressive-session-ext#13](https://github.com/zendframework/zend-expressive-session-ext/pull/13) fixes an issue whereby a new session cookie is not always sent
   following an ID regeneration.
 
 ## 1.0.1 - 2018-03-15
@@ -52,7 +52,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#8](https://github.com/zendframework/zend-expressive-session-ext/pull/8)
+- [zendframework/zend-expressive-session-ext#8](https://github.com/zendframework/zend-expressive-session-ext/pull/8)
   fixes how session resets occur, ensuring cookies are reset correctly.
 
 ## 1.0.0 - 2018-03-15
@@ -71,7 +71,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Removes support for pre-stable 1.0.0 versions of zend-expressive-session.
+- Removes support for pre-stable 1.0.0 versions of mezzio-session.
 
 ### Fixed
 
@@ -97,7 +97,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#1](https://github.com/zendframework/zend-expressive-session-ext/pull/1)
+- [zendframework/zend-expressive-session-ext#1](https://github.com/zendframework/zend-expressive-session-ext/pull/1)
   fixes a problem that occurs when a requested session does not resolve to an
   existing session and/or an existing session with empty data, leading to
   creation of new sessions on each request.
@@ -106,15 +106,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#5](https://github.com/zendframework/zend-expressive-session-ext/pull/5) adds
-  support for the ^1.0.0alpha1 release of zend-expressive-session.
+- [zendframework/zend-expressive-session-ext#5](https://github.com/zendframework/zend-expressive-session-ext/pull/5) adds
+  support for the ^1.0.0alpha1 release of mezzio-session.
 
 ## 0.1.2 - 2017-12-12
 
 ### Added
 
-- [#3](https://github.com/zendframework/zend-expressive-session-ext/pull/3) adds
-  support for the 1.0-dev and 1.0 releases of zend-expressive-session.
+- [zendframework/zend-expressive-session-ext#3](https://github.com/zendframework/zend-expressive-session-ext/pull/3) adds
+  support for the 1.0-dev and 1.0 releases of mezzio-session.
 
 ### Changed
 
