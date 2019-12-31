@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Removes support for pre-stable 1.0.0 versions of zend-expressive-session.
+- Removes support for pre-stable 1.0.0 versions of mezzio-session.
 
 ### Fixed
 
@@ -44,7 +44,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#1](https://github.com/zendframework/zend-expressive-session-ext/pull/1)
+- [zendframework/zend-expressive-session-ext#1](https://github.com/zendframework/zend-expressive-session-ext/pull/1)
   fixes a problem that occurs when a requested session does not resolve to an
   existing session and/or an existing session with empty data, leading to
   creation of new sessions on each request.
@@ -53,15 +53,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#5](https://github.com/zendframework/zend-expressive-session-ext/pull/5) adds
-  support for the ^1.0.0alpha1 release of zend-expressive-session.
+- [zendframework/zend-expressive-session-ext#5](https://github.com/zendframework/zend-expressive-session-ext/pull/5) adds
+  support for the ^1.0.0alpha1 release of mezzio-session.
 
 ## 0.1.2 - 2017-12-12
 
 ### Added
 
-- [#3](https://github.com/zendframework/zend-expressive-session-ext/pull/3) adds
-  support for the 1.0-dev and 1.0 releases of zend-expressive-session.
+- [zendframework/zend-expressive-session-ext#3](https://github.com/zendframework/zend-expressive-session-ext/pull/3) adds
+  support for the 1.0-dev and 1.0 releases of mezzio-session.
 
 ### Changed
 
