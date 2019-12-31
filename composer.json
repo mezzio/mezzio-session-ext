@@ -1,56 +1,58 @@
 {
-    "name": "zendframework/zend-expressive-session-ext",
-    "description": "ext-session persistence adapter for zend-expressive-session",
-    "type": "library",
+    "name": "mezzio/mezzio-session-ext",
+    "description": "ext-session persistence adapter for mezzio-session",
     "license": "BSD-3-Clause",
     "keywords": [
+        "laminas",
+        "mezzio",
         "components",
         "ext-session",
         "psr-7",
-        "session",
-        "zf",
-        "zendframework"
+        "session"
     ],
+    "homepage": "https://mezzio.dev",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-expressive-session-ext/",
-        "issues": "https://github.com/zendframework/zend-expressive-session-ext/issues",
-        "source": "https://github.com/zendframework/zend-expressive-session-ext",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/components"
+        "docs": "https://docs.mezzio.dev/mezzio-session-ext/",
+        "issues": "https://github.com/mezzio/mezzio-session-ext/issues",
+        "source": "https://github.com/mezzio/mezzio-session-ext",
+        "rss": "https://github.com/mezzio/mezzio-session-ext/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "laminas": {
+            "config-provider": "Mezzio\\Session\\Ext\\ConfigProvider"
+        }
     },
     "require": {
         "php": "^7.1",
         "ext-session": "*",
         "dflydev/fig-cookies": "^1.0",
-        "zendframework/zend-expressive-session": "^0.1.0"
+        "laminas/laminas-zendframework-bridge": "^1.0",
+        "mezzio/mezzio-session": "^0.1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0.9",
-        "zendframework/zend-coding-standard": "~1.0.0",
-        "zendframework/zend-diactoros": "^1.6"
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "laminas/laminas-diactoros": "^1.6",
+        "phpunit/phpunit": "^6.0.9"
     },
     "conflict": {
         "phpspec/prophecy": "<1.7.2"
     },
     "autoload": {
         "psr-4": {
-            "Zend\\Expressive\\Session\\Ext\\": "src/"
+            "Mezzio\\Session\\Ext\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ZendTest\\Expressive\\Session\\Ext\\": "test/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
-        "zf": {
-            "config-provider": "Zend\\Expressive\\Session\\Ext\\ConfigProvider"
+            "MezzioTest\\Session\\Ext\\": "test/"
         }
     },
     "scripts": {
@@ -63,5 +65,8 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "upload-coverage": "coveralls -v"
+    },
+    "replace": {
+        "zendframework/zend-expressive-session-ext": "self.version"
     }
 }
