@@ -29,8 +29,10 @@ use function gmdate;
 use function ini_get;
 use function session_id;
 use function session_name;
+use function session_save_path;
 use function session_start;
 use function session_status;
+use function sys_get_temp_dir;
 use function time;
 
 use const PHP_SESSION_ACTIVE;
@@ -908,6 +910,23 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertNotEmpty($actual->getId());
         $this->assertNotSame('original-id', $actual->getId());
         $this->assertFalse($actual->isRegenerated());
+    }
+
+    public function testRegenerateWhenSessionAlreadyActiveDestroyExistingSessionFirst()
+    {
+        session_start();
+
+        $_SESSION['test'] = 'value';
+        $fileSession = (session_save_path() ?: sys_get_temp_dir()) . '/sess_' . session_id();
+
+        $this->assertFileExists($fileSession);
+
+        $persistence = new PhpSessionPersistence();
+        $session     = new Session(['foo' => 'bar']);
+        $session     = $session->regenerate();
+        $persistence->persistSession($session, new Response());
+
+        $this->assertFileNotExists($fileSession);
     }
 
     public function testInitializeIdReturnsSessionUnaltered()
