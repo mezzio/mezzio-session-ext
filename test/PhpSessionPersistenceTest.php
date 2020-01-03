@@ -58,7 +58,7 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function setUp()
     {
-        $this->sessionSavePath = sys_get_temp_dir() . "/zend-expressive-session-ext";
+        $this->sessionSavePath = sys_get_temp_dir() . "/mezzio-session-ext";
 
         $this->originalSessionSettings = $this->applyCustomSessionOptions([
             'save_path' => $this->sessionSavePath,
