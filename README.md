@@ -1,6 +1,6 @@
 # mezzio-session-ext
 
-[![Build Status](https://travis-ci.org/mezzio/mezzio-session-ext.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-session-ext)
+[![Build Status](https://travis-ci.com/mezzio/mezzio-session-ext.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-session-ext)
 [![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-session-ext/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-session-ext?branch=master)
 
 Provides an ext-session persistence adapter for use with

@@ -1,11 +1,10 @@
 docs_dir: docs/book
 site_dir: docs/html
 nav:
-    - index.md
+    - Home: index.md
     - Introduction: intro.md
 site_name: mezzio-session-ext
 site_description: 'PHP ext-session persistence adapter for mezzio-session'
 repo_url: 'https://github.com/mezzio/mezzio-session-ext'
 extra:
     project: Mezzio
-    project_url: 'https://docs.mezzio.dev'
