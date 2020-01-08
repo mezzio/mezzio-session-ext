@@ -8,4 +8,3 @@ site_description: 'PHP ext-session persistence adapter for mezzio-session'
 repo_url: 'https://github.com/mezzio/mezzio-session-ext'
 extra:
     project: Mezzio
-    project_url: 'https://docs.mezzio.dev'
