@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>https://docs.mezzio.dev/</loc>
-     <lastmod>2020-01-12</lastmod>
+     <loc>https://docs.mezzio.dev/mezzio-session-ext/</loc>
+     <lastmod>2020-01-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.mezzio.dev/intro/</loc>
-     <lastmod>2020-01-12</lastmod>
+     <loc>https://docs.mezzio.dev/mezzio-session-ext/intro/</loc>
+     <lastmod>2020-01-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
