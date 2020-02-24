@@ -13,6 +13,7 @@ namespace Mezzio\Session\Ext;
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
+use Dflydev\FigCookies\Modifier\SameSite;
 use Mezzio\Session\InitializePersistenceIdInterface;
 use Mezzio\Session\Session;
 use Mezzio\Session\SessionCookiePersistenceInterface;
@@ -97,13 +98,15 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     ];
 
     /**
-     * Memoize session ini settings before starting the request.
+     * Memorize session ini settings before starting the request.
      *
      * The cache_limiter setting is actually "stolen", as we will start the
      * session with a forced empty value in order to instruct the php engine to
      * skip sending the cache headers (this being php's default behaviour).
      * Those headers will be added programmatically to the response along with
      * the session set-cookie header when the session data is persisted.
+     *
+     * @param bool $nonLocking use the non locking mode during initialization?
      */
     public function __construct(bool $nonLocking = false)
     {
@@ -263,6 +266,11 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
             ->withDomain(ini_get('session.cookie_domain'))
             ->withSecure($secure)
             ->withHttpOnly($httpOnly);
+
+        $cookieSameSite = ini_get('session.cookie_samesite');
+        if ($cookieSameSite) {
+            $sessionCookie = $sessionCookie->withSameSite(SameSite::fromString($cookieSameSite));
+        }
 
         return $cookieLifetime
             ? $sessionCookie->withExpires(time() + $cookieLifetime)

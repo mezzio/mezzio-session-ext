@@ -517,6 +517,46 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertNotEmpty($response->getHeaderLine('Set-Cookie'));
     }
 
+    public function sameSitePossibleValues()
+    {
+        return [
+            ['Strict'],
+            ['Lax'],
+            ['None'],
+            [null],
+            [''],
+        ];
+    }
+
+    /**
+     * @dataProvider sameSitePossibleValues
+     */
+    public function testCookieHasSameSite(?string $sameSite)
+    {
+        $ini = $this->applyCustomSessionOptions([
+            'cookie_samesite' => $sameSite,
+        ]);
+
+        $persistence = new PhpSessionPersistence();
+        $request     = new ServerRequest();
+        $session     = $persistence->initializeSessionFromRequest($request);
+
+        $session->set('foo', 'bar');
+
+        $response = new Response();
+        $response = $persistence->persistSession($session, $response);
+
+        $cookie = $response->getHeaderLine('Set-Cookie');
+
+        if ($sameSite) {
+            self::assertStringContainsStringIgnoringCase('SameSite=' . $sameSite, $cookie);
+        } else {
+            self::assertStringNotContainsStringIgnoringCase('SameSite=', $cookie);
+        }
+
+        $this->restoreOriginalSessionIniSettings($ini);
+    }
+
     public function testCookiesSetWithDefaultLifetime()
     {
         $persistence = new PhpSessionPersistence();
