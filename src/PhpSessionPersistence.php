@@ -130,7 +130,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         // - the session is marked as regenerated
         // - the id is empty, but the data has changed (new session)
         if ($session->isRegenerated()
-            || ('' === $id && $session->hasChanged())
+            || ($id === '' && $session->hasChanged())
         ) {
             $id = $this->regenerateSession();
         } elseif ($this->nonLocking && $session->hasChanged()) {
@@ -138,7 +138,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
             $this->startSession($id);
         }
 
-        if (PHP_SESSION_ACTIVE === session_status()) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
             $_SESSION = $session->toArray();
             session_write_close();
         }
@@ -146,7 +146,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         // If we do not have an identifier at this point, it means a new
         // session was created, but never written to. In that case, there's
         // no reason to provide a cookie back to the user.
-        if ('' === $id) {
+        if ($id === '') {
             return $response;
         }
 
@@ -164,7 +164,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     public function initializeId(SessionInterface $session): SessionInterface
     {
         $id = $session->getId();
-        if ('' === $id || $session->isRegenerated()) {
+        if ($id === '' || $session->isRegenerated()) {
             $session = new Session($session->toArray(), $this->generateSessionId());
         }
 
@@ -191,7 +191,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      */
     private function regenerateSession() : string
     {
-        if (PHP_SESSION_ACTIVE === session_status()) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
             session_destroy();
         }
 
@@ -269,7 +269,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
         $cacheHeaders = $this->generateCacheHeaders();
         foreach ($cacheHeaders as $name => $value) {
-            if (false !== $value) {
+            if ($value !== false) {
                 $response = $response->withHeader($name, $value);
             }
         }
@@ -289,7 +289,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         }
 
         // cache_limiter: 'nocache'
-        if ('nocache' === $this->cacheLimiter) {
+        if ($this->cacheLimiter === 'nocache') {
             return [
                 'Expires'       => self::CACHE_PAST_DATE,
                 'Cache-Control' => 'no-store, no-cache, must-revalidate',
@@ -301,7 +301,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         $lastModified = $this->getLastModified();
 
         // cache_limiter: 'public'
-        if ('public' === $this->cacheLimiter) {
+        if ($this->cacheLimiter === 'public') {
             return [
                 'Expires'       => gmdate(self::HTTP_DATE_FORMAT, time() + $maxAge),
                 'Cache-Control' => sprintf('public, max-age=%d', $maxAge),
@@ -310,7 +310,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         }
 
         // cache_limiter: 'private'
-        if ('private' === $this->cacheLimiter) {
+        if ($this->cacheLimiter === 'private') {
             return [
                 'Expires'       => self::CACHE_PAST_DATE,
                 'Cache-Control' => sprintf('private, max-age=%d', $maxAge),

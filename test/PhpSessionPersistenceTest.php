@@ -428,7 +428,7 @@ class PhpSessionPersistenceTest extends TestCase
         $response = $persistence->persistSession($session, new Response());
 
         $lastmod = getlastmod();
-        if (false === $lastmod) {
+        if ($lastmod === false) {
             $rc = new ReflectionClass($persistence);
             $classFile = $rc->getFileName();
             $lastmod = filemtime($classFile);
@@ -436,10 +436,10 @@ class PhpSessionPersistenceTest extends TestCase
 
         $lastModified = $lastmod ? gmdate(PhpSessionPersistence::HTTP_DATE_FORMAT, $lastmod) : false;
 
-        $expectedHeaderLine = false === $lastModified ? '' : $lastModified;
+        $expectedHeaderLine = $lastModified === false ? '' : $lastModified;
 
         $this->assertSame($expectedHeaderLine, $response->getHeaderLine('Last-Modified'));
-        if (false === $lastModified) {
+        if ($lastModified === false) {
             $this->assertFalse($response->hasHeader('Last-Modified'));
         }
 
