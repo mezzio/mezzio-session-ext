@@ -23,6 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use function bin2hex;
 use function filemtime;
+use function filter_var;
 use function getlastmod;
 use function gmdate;
 use function ini_get;
@@ -31,6 +32,7 @@ use function session_destroy;
 use function session_id;
 use function session_name;
 use function session_start;
+use function session_status;
 use function session_write_close;
 use function sprintf;
 use function time;

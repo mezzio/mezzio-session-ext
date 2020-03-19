@@ -26,17 +26,32 @@ use ReflectionClass;
 use ReflectionMethod;
 
 use function filemtime;
+use function filter_var;
 use function getlastmod;
+use function glob;
 use function gmdate;
 use function ini_get;
+use function ini_set;
+use function intval;
+use function is_bool;
+use function is_dir;
+use function mkdir;
 use function session_id;
 use function session_name;
 use function session_save_path;
+use function session_set_cookie_params;
 use function session_start;
 use function session_status;
+use function session_write_close;
+use function sprintf;
+use function strtotime;
+use function strval;
 use function sys_get_temp_dir;
 use function time;
+use function unlink;
 
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_SESSION_ACTIVE;
 use const PHP_SESSION_NONE;
 
