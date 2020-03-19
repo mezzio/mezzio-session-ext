@@ -53,6 +53,14 @@ use const PHP_SESSION_ACTIVE;
 class PhpSessionPersistence implements InitializePersistenceIdInterface, SessionPersistenceInterface
 {
     /**
+     * This unusual past date value is taken from the php-engine source code and
+     * used "as is" for consistency.
+     */
+    public const CACHE_PAST_DATE = 'Thu, 19 Nov 1981 08:52:00 GMT';
+
+    public const HTTP_DATE_FORMAT = 'D, d M Y H:i:s T';
+
+    /**
      * Use non locking mode during session initialization?
      *
      * @var bool
@@ -83,14 +91,6 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         'private'           => true,
         'private_no_expire' => true,
     ];
-
-    /**
-     * This unusual past date value is taken from the php-engine source code and
-     * used "as is" for consistency.
-     */
-    public const CACHE_PAST_DATE  = 'Thu, 19 Nov 1981 08:52:00 GMT';
-
-    public const HTTP_DATE_FORMAT = 'D, d M Y H:i:s T';
 
     /**
      * Memoize session ini settings before starting the request.
