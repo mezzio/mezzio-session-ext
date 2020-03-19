@@ -6,6 +6,8 @@
  * @license   https://github.com/mezzio/mezzio-session-ext/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Mezzio\Session\Ext;
 
 use Dflydev\FigCookies\FigRequestCookies;
