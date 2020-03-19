@@ -6,12 +6,13 @@
  * @license   https://github.com/mezzio/mezzio-session-ext/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Mezzio\Session\Ext;
 
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
-use Mezzio\Session\GenerateIdPersistenceInterface;
 use Mezzio\Session\InitializePersistenceIdInterface;
 use Mezzio\Session\Session;
 use Mezzio\Session\SessionCookiePersistenceInterface;
@@ -22,6 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use function bin2hex;
 use function filemtime;
+use function filter_var;
 use function getlastmod;
 use function gmdate;
 use function ini_get;
@@ -30,6 +32,7 @@ use function session_destroy;
 use function session_id;
 use function session_name;
 use function session_start;
+use function session_status;
 use function session_write_close;
 use function sprintf;
 use function time;
@@ -53,6 +56,14 @@ use const PHP_SESSION_ACTIVE;
  */
 class PhpSessionPersistence implements InitializePersistenceIdInterface, SessionPersistenceInterface
 {
+    /**
+     * This unusual past date value is taken from the php-engine source code and
+     * used "as is" for consistency.
+     */
+    public const CACHE_PAST_DATE = 'Thu, 19 Nov 1981 08:52:00 GMT';
+
+    public const HTTP_DATE_FORMAT = 'D, d M Y H:i:s T';
+
     /**
      * Use non locking mode during session initialization?
      *
@@ -78,20 +89,12 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     private $cacheLimiter;
 
     /** @var array */
-    private static $supported_cache_limiters = [
+    private static $supportedCacheLimiters = [
         'nocache'           => true,
         'public'            => true,
         'private'           => true,
         'private_no_expire' => true,
     ];
-
-    /**
-     * This unusual past date value is taken from the php-engine source code and
-     * used "as is" for consistency.
-     */
-    public const CACHE_PAST_DATE  = 'Thu, 19 Nov 1981 08:52:00 GMT';
-
-    public const HTTP_DATE_FORMAT = 'D, d M Y H:i:s T';
 
     /**
      * Memoize session ini settings before starting the request.
@@ -108,6 +111,15 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
         $this->cacheLimiter = ini_get('session.cache_limiter');
         $this->cacheExpire  = (int) ini_get('session.cache_expire');
+    }
+
+    /**
+     * @internal
+     * @return bool the non-locking mode used during initialization
+     */
+    public function isNonLocking() : bool
+    {
+        return $this->nonLocking;
     }
 
     public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface
@@ -129,7 +141,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         // - the session is marked as regenerated
         // - the id is empty, but the data has changed (new session)
         if ($session->isRegenerated()
-            || ('' === $id && $session->hasChanged())
+            || ($id === '' && $session->hasChanged())
         ) {
             $id = $this->regenerateSession();
         } elseif ($this->nonLocking && $session->hasChanged()) {
@@ -137,7 +149,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
             $this->startSession($id);
         }
 
-        if (PHP_SESSION_ACTIVE === session_status()) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
             $_SESSION = $session->toArray();
             session_write_close();
         }
@@ -145,7 +157,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         // If we do not have an identifier at this point, it means a new
         // session was created, but never written to. In that case, there's
         // no reason to provide a cookie back to the user.
-        if ('' === $id) {
+        if ($id === '') {
             return $response;
         }
 
@@ -160,10 +172,10 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         return $response;
     }
 
-    public function initializeId(SessionInterface $session): SessionInterface
+    public function initializeId(SessionInterface $session) : SessionInterface
     {
         $id = $session->getId();
-        if ('' === $id || $session->isRegenerated()) {
+        if ($id === '' || $session->isRegenerated()) {
             $session = new Session($session->toArray(), $this->generateSessionId());
         }
 
@@ -190,7 +202,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      */
     private function regenerateSession() : string
     {
-        if (PHP_SESSION_ACTIVE === session_status()) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
             session_destroy();
         }
 
@@ -268,7 +280,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
         $cacheHeaders = $this->generateCacheHeaders();
         foreach ($cacheHeaders as $name => $value) {
-            if (false !== $value) {
+            if ($value !== false) {
                 $response = $response->withHeader($name, $value);
             }
         }
@@ -283,12 +295,12 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     private function generateCacheHeaders() : array
     {
         // Unsupported cache_limiter
-        if (! isset(self::$supported_cache_limiters[$this->cacheLimiter])) {
+        if (! isset(self::$supportedCacheLimiters[$this->cacheLimiter])) {
             return [];
         }
 
         // cache_limiter: 'nocache'
-        if ('nocache' === $this->cacheLimiter) {
+        if ($this->cacheLimiter === 'nocache') {
             return [
                 'Expires'       => self::CACHE_PAST_DATE,
                 'Cache-Control' => 'no-store, no-cache, must-revalidate',
@@ -300,7 +312,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         $lastModified = $this->getLastModified();
 
         // cache_limiter: 'public'
-        if ('public' === $this->cacheLimiter) {
+        if ($this->cacheLimiter === 'public') {
             return [
                 'Expires'       => gmdate(self::HTTP_DATE_FORMAT, time() + $maxAge),
                 'Cache-Control' => sprintf('public, max-age=%d', $maxAge),
@@ -309,7 +321,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         }
 
         // cache_limiter: 'private'
-        if ('private' === $this->cacheLimiter) {
+        if ($this->cacheLimiter === 'private') {
             return [
                 'Expires'       => self::CACHE_PAST_DATE,
                 'Cache-Control' => sprintf('private, max-age=%d', $maxAge),
@@ -328,6 +340,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      * Return the Last-Modified header line based on main script of execution
      * modified time. If unable to get a valid timestamp we use this class file
      * modification time as fallback.
+     *
      * @return string|false
      */
     private function getLastModified()
@@ -341,12 +354,10 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      */
     private function responseAlreadyHasCacheHeaders(ResponseInterface $response) : bool
     {
-        return (
-            $response->hasHeader('Expires')
+        return $response->hasHeader('Expires')
             || $response->hasHeader('Last-Modified')
             || $response->hasHeader('Cache-Control')
-            || $response->hasHeader('Pragma')
-        );
+            || $response->hasHeader('Pragma');
     }
 
     private function getCookieLifetime(SessionInterface $session) : int
