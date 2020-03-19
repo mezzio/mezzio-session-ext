@@ -17,7 +17,7 @@ use Psr\Container\ContainerInterface;
 
 class PhpSessionPersistenceFactoryTest extends TestCase
 {
-    public function testFactoryConfigProducesPhpSessionPersistenceInterfaceService()
+    public function testFactoryConfigProducesPhpSessionPersistenceInterfaceService() : void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $factory = new PhpSessionPersistenceFactory();
