@@ -75,7 +75,7 @@ class PhpSessionPersistenceTest extends TestCase
      */
     private $sessionSavePath;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->sessionSavePath = sys_get_temp_dir() . "/mezzio-session-ext";
 
@@ -91,7 +91,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->persistence = new PhpSessionPersistence();
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         session_write_close();
         $this->restoreOriginalSessionIniSettings($this->originalSessionSettings);

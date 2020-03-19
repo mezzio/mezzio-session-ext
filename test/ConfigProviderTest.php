@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigProviderTest extends TestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $this->provider = new ConfigProvider();
     }
