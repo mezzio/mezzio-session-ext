@@ -344,12 +344,10 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      */
     private function responseAlreadyHasCacheHeaders(ResponseInterface $response) : bool
     {
-        return (
-            $response->hasHeader('Expires')
+        return $response->hasHeader('Expires')
             || $response->hasHeader('Last-Modified')
             || $response->hasHeader('Cache-Control')
-            || $response->hasHeader('Pragma')
-        );
+            || $response->hasHeader('Pragma');
     }
 
     private function getCookieLifetime(SessionInterface $session) : int
