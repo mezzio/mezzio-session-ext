@@ -44,7 +44,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#7](https://github.com/mezzio/mezzio-session-ext/pull/7) fixes destroying session on regenerate when session is active.
 
 ## 1.7.0 - TBD
 
