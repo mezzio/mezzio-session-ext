@@ -163,7 +163,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         return $response;
     }
 
-    public function initializeId(SessionInterface $session): SessionInterface
+    public function initializeId(SessionInterface $session) : SessionInterface
     {
         $id = $session->getId();
         if ($id === '' || $session->isRegenerated()) {
