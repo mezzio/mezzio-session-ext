@@ -6,6 +6,8 @@
  * @license   https://github.com/mezzio/mezzio-session-ext/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace MezzioTest\Session\Ext;
 
 use Dflydev\FigCookies\Cookie;
@@ -24,17 +26,30 @@ use ReflectionClass;
 use ReflectionMethod;
 
 use function filemtime;
+use function filter_var;
 use function getlastmod;
+use function glob;
 use function gmdate;
 use function ini_get;
+use function ini_set;
+use function is_bool;
+use function is_dir;
+use function mkdir;
 use function session_id;
 use function session_name;
 use function session_save_path;
+use function session_set_cookie_params;
 use function session_start;
 use function session_status;
+use function session_write_close;
+use function sprintf;
+use function strtotime;
 use function sys_get_temp_dir;
 use function time;
+use function unlink;
 
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_SESSION_ACTIVE;
 use const PHP_SESSION_NONE;
 
@@ -43,24 +58,18 @@ use const PHP_SESSION_NONE;
  */
 class PhpSessionPersistenceTest extends TestCase
 {
-    /**
-     * @var PhpSessionPersistence
-     */
+    /** @var PhpSessionPersistence */
     private $persistence;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $originalSessionSettings;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $sessionSavePath;
 
-    public function setUp()
+    protected function setUp() : void
     {
-        $this->sessionSavePath = sys_get_temp_dir() . "/mezzio-session-ext";
+        $this->sessionSavePath = sys_get_temp_dir() . '/mezzio-session-ext';
 
         $this->originalSessionSettings = $this->applyCustomSessionOptions([
             'save_path' => $this->sessionSavePath,
@@ -74,7 +83,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->persistence = new PhpSessionPersistence();
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         session_write_close();
         $this->restoreOriginalSessionIniSettings($this->originalSessionSettings);
@@ -88,7 +97,7 @@ class PhpSessionPersistenceTest extends TestCase
         }
     }
 
-    public function startSession(string $id = null, array $options = [])
+    public function startSession(?string $id = null, array $options = []) : void
     {
         $id = $id ?: 'testing';
         session_id($id);
@@ -98,11 +107,11 @@ class PhpSessionPersistenceTest extends TestCase
         ] + $options);
     }
 
-    /**
-     * @return ServerRequestInterface
-     */
-    private function createSessionCookieRequest($sessionId = null, string $sessionName = null, array $serverParams = [])
-    {
+    private function createSessionCookieRequest(
+        ?string $sessionId = null,
+        ?string $sessionName = null,
+        array $serverParams = []
+    ) : ServerRequestInterface {
         return FigRequestCookies::set(
             new ServerRequest($serverParams),
             Cookie::create(
@@ -116,13 +125,13 @@ class PhpSessionPersistenceTest extends TestCase
      * @param array $options Custom session options (without the "session" namespace)
      * @return array Return the original (and overwritten) namespaced ini settings
      */
-    private function applyCustomSessionOptions(array $options)
+    private function applyCustomSessionOptions(array $options) : array
     {
         $ini = [];
         foreach ($options as $key => $value) {
-            $ini_key = "session.{$key}";
-            $ini[$ini_key] = ini_get($ini_key);
-            ini_set($ini_key, strval(is_bool($value) ? intval($value) : $value));
+            $iniKey = "session.{$key}";
+            $ini[$iniKey] = ini_get($iniKey);
+            ini_set($iniKey, (string) (is_bool($value) ? (int) $value : $value));
         }
 
         return $ini;
@@ -131,14 +140,14 @@ class PhpSessionPersistenceTest extends TestCase
     /**
      * @param array $ini The original session namespaced ini settings
      */
-    private function restoreOriginalSessionIniSettings(array $ini)
+    private function restoreOriginalSessionIniSettings(array $ini) : void
     {
         foreach ($ini as $key => $value) {
             ini_set($key, $value);
         }
     }
 
-    private function assertPersistedSessionsCount(int $expectedCount): void
+    private function assertPersistedSessionsCount(int $expectedCount) : void
     {
         $files = glob("{$this->sessionSavePath}/sess_*");
         $this->assertCount($expectedCount, $files);
@@ -426,7 +435,7 @@ class PhpSessionPersistenceTest extends TestCase
         $response = $persistence->persistSession($session, new Response());
 
         $lastmod = getlastmod();
-        if (false === $lastmod) {
+        if ($lastmod === false) {
             $rc = new ReflectionClass($persistence);
             $classFile = $rc->getFileName();
             $lastmod = filemtime($classFile);
@@ -434,10 +443,10 @@ class PhpSessionPersistenceTest extends TestCase
 
         $lastModified = $lastmod ? gmdate(PhpSessionPersistence::HTTP_DATE_FORMAT, $lastmod) : false;
 
-        $expectedHeaderLine = false === $lastModified ? '' : $lastModified;
+        $expectedHeaderLine = $lastModified === false ? '' : $lastModified;
 
         $this->assertSame($expectedHeaderLine, $response->getHeaderLine('Last-Modified'));
-        if (false === $lastModified) {
+        if ($lastModified === false) {
             $this->assertFalse($response->hasHeader('Last-Modified'));
         }
 
@@ -652,19 +661,19 @@ class PhpSessionPersistenceTest extends TestCase
                 'use_cookies'      => true,      // FALSE is required
                 'use_only_cookies' => false,     // TRUE is required
                 'cache_limiter'    => 'nocache', // '' is required
-            ]
+            ],
         ]);
 
         $filter = FILTER_VALIDATE_BOOLEAN;
         $flags  = FILTER_NULL_ON_FAILURE;
 
-        $session_use_cookies      = filter_var(ini_get('session.use_cookies'), $filter, $flags);
-        $session_use_only_cookies = filter_var(ini_get('session.use_only_cookies'), $filter, $flags);
-        $session_cache_limiter    = ini_get('session.cache_limiter');
+        $sessionUseCookies     = filter_var(ini_get('session.use_cookies'), $filter, $flags);
+        $sessionUseOnlyCookies = filter_var(ini_get('session.use_only_cookies'), $filter, $flags);
+        $sessionCacheLimiter   = ini_get('session.cache_limiter');
 
-        $this->assertFalse($session_use_cookies);
-        $this->assertTrue($session_use_only_cookies);
-        $this->assertSame('', $session_cache_limiter);
+        $this->assertFalse($sessionUseCookies);
+        $this->assertTrue($sessionUseOnlyCookies);
+        $this->assertSame('', $sessionCacheLimiter);
     }
 
     public function testNoMultipleEmptySessionFilesAreCreatedIfNoSessionCookiePresent()
@@ -679,7 +688,7 @@ class PhpSessionPersistenceTest extends TestCase
         // initial sessioncookie-less request
         $request = new ServerRequest();
 
-        for ($i = 0; $i < 3; $i += 1) {
+        for ($i = 0; $i < 3; ++$i) {
             $session  = $persistence->initializeSessionFromRequest($request);
             $response = $persistence->persistSession($session, new Response());
 
@@ -702,7 +711,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testOnlyOneSessionFileIsCreatedIfNoSessionCookiePresentINFirstRequestButSessionDataChanged()
+    public function testOnlyOneSessionFileIsCreatedIfNoSessionCookiePresentInFirstRequestButSessionDataChanged()
     {
         $sessionName = 'NOSESSIONCOOKIESESSID';
         $ini = $this->applyCustomSessionOptions([
@@ -714,7 +723,7 @@ class PhpSessionPersistenceTest extends TestCase
         // initial sessioncookie-less request
         $request = new ServerRequest();
 
-        for ($i = 0; $i < 3; $i += 1) {
+        for ($i = 0; $i < 3; ++$i) {
             $session  = $persistence->initializeSessionFromRequest($request);
             $session->set('foo' . $i, 'bar' . $i);
             $response = $persistence->persistSession($session, new Response());
@@ -740,6 +749,7 @@ class PhpSessionPersistenceTest extends TestCase
 
     /**
      * @dataProvider cookieSettingsProvider
+     *
      * @param string|int|bool $secureIni
      * @param string|int|bool $httpOnlyIni
      */

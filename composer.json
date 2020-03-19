@@ -41,7 +41,7 @@
     "require-dev": {
         "laminas/laminas-coding-standard": "~1.0.0",
         "laminas/laminas-diactoros": "^1.6",
-        "phpunit/phpunit": "^7.0.2"
+        "phpunit/phpunit": "^7.5.20 || ^8.5.2 || ^9.0.1"
     },
     "conflict": {
         "phpspec/prophecy": "<1.7.2"
