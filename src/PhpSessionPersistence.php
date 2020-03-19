@@ -331,6 +331,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      * Return the Last-Modified header line based on main script of execution
      * modified time. If unable to get a valid timestamp we use this class file
      * modification time as fallback.
+     *
      * @return string|false
      */
     private function getLastModified()

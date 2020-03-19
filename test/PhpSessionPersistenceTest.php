@@ -58,19 +58,13 @@ use const PHP_SESSION_NONE;
  */
 class PhpSessionPersistenceTest extends TestCase
 {
-    /**
-     * @var PhpSessionPersistence
-     */
+    /** @var PhpSessionPersistence */
     private $persistence;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $originalSessionSettings;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $sessionSavePath;
 
     protected function setUp() : void
@@ -755,6 +749,7 @@ class PhpSessionPersistenceTest extends TestCase
 
     /**
      * @dataProvider cookieSettingsProvider
+     *
      * @param string|int|bool $secureIni
      * @param string|int|bool $httpOnlyIni
      */
