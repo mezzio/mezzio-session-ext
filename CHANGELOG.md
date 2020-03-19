@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#10](https://github.com/mezzio/mezzio-session-ext/pull/10) adds support for PHP 7.4.
 
 ### Changed
 
