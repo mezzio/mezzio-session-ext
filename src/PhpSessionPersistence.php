@@ -113,6 +113,15 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         $this->cacheExpire  = (int) ini_get('session.cache_expire');
     }
 
+    /**
+     * @internal
+     * @return bool the non-locking mode used during initialization
+     */
+    public function isNonLocking() : bool
+    {
+        return $this->nonLocking;
+    }
+
     public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface
     {
         $sessionId = FigRequestCookies::get($request, session_name())->getValue() ?? '';

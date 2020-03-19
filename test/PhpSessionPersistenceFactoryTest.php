@@ -26,7 +26,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
         $container->has('config')->willReturn(false);
         $persistence = $factory($container->reveal());
         $this->assertInstanceOf(PhpSessionPersistence::class, $persistence);
-        $this->assertAttributeSame(false, 'nonLocking', $persistence);
+        $this->assertFalse($persistence->isNonLocking());
 
         // test php-session-persistence with non-locking config set to false and true
         foreach ([false, true] as $nonLocking) {
@@ -41,7 +41,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
                 ],
             ]);
             $persistence = $factory($container->reveal());
-            $this->assertAttributeSame($nonLocking, 'nonLocking', $persistence);
+            $this->assertSame($nonLocking, $persistence->isNonLocking());
         }
     }
 }
