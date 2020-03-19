@@ -75,7 +75,7 @@ class PhpSessionPersistenceTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->sessionSavePath = sys_get_temp_dir() . "/mezzio-session-ext";
+        $this->sessionSavePath = sys_get_temp_dir() . '/mezzio-session-ext';
 
         $this->originalSessionSettings = $this->applyCustomSessionOptions([
             'save_path' => $this->sessionSavePath,
