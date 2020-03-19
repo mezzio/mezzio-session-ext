@@ -719,7 +719,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testOnlyOneSessionFileIsCreatedIfNoSessionCookiePresentINFirstRequestButSessionDataChanged()
+    public function testOnlyOneSessionFileIsCreatedIfNoSessionCookiePresentInFirstRequestButSessionDataChanged()
     {
         $sessionName = 'NOSESSIONCOOKIESESSID';
         $ini = $this->applyCustomSessionOptions([
