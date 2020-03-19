@@ -32,7 +32,6 @@ use function glob;
 use function gmdate;
 use function ini_get;
 use function ini_set;
-use function intval;
 use function is_bool;
 use function is_dir;
 use function mkdir;
@@ -45,7 +44,6 @@ use function session_status;
 use function session_write_close;
 use function sprintf;
 use function strtotime;
-use function strval;
 use function sys_get_temp_dir;
 use function time;
 use function unlink;
@@ -137,9 +135,9 @@ class PhpSessionPersistenceTest extends TestCase
     {
         $ini = [];
         foreach ($options as $key => $value) {
-            $ini_key = "session.{$key}";
-            $ini[$ini_key] = ini_get($ini_key);
-            ini_set($ini_key, strval(is_bool($value) ? intval($value) : $value));
+            $iniKey = "session.{$key}";
+            $ini[$iniKey] = ini_get($iniKey);
+            ini_set($iniKey, (string) (is_bool($value) ? (int) $value : $value));
         }
 
         return $ini;
@@ -675,13 +673,13 @@ class PhpSessionPersistenceTest extends TestCase
         $filter = FILTER_VALIDATE_BOOLEAN;
         $flags  = FILTER_NULL_ON_FAILURE;
 
-        $session_use_cookies      = filter_var(ini_get('session.use_cookies'), $filter, $flags);
-        $session_use_only_cookies = filter_var(ini_get('session.use_only_cookies'), $filter, $flags);
-        $session_cache_limiter    = ini_get('session.cache_limiter');
+        $sessionUseCookies     = filter_var(ini_get('session.use_cookies'), $filter, $flags);
+        $sessionUseOnlyCookies = filter_var(ini_get('session.use_only_cookies'), $filter, $flags);
+        $sessionCacheLimiter   = ini_get('session.cache_limiter');
 
-        $this->assertFalse($session_use_cookies);
-        $this->assertTrue($session_use_only_cookies);
-        $this->assertSame('', $session_cache_limiter);
+        $this->assertFalse($sessionUseCookies);
+        $this->assertTrue($sessionUseOnlyCookies);
+        $this->assertSame('', $sessionCacheLimiter);
     }
 
     public function testNoMultipleEmptySessionFilesAreCreatedIfNoSessionCookiePresent()
