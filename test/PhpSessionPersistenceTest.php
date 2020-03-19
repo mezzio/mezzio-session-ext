@@ -667,7 +667,7 @@ class PhpSessionPersistenceTest extends TestCase
                 'use_cookies'      => true,      // FALSE is required
                 'use_only_cookies' => false,     // TRUE is required
                 'cache_limiter'    => 'nocache', // '' is required
-            ]
+            ],
         ]);
 
         $filter = FILTER_VALIDATE_BOOLEAN;
