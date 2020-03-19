@@ -11,7 +11,6 @@ namespace Mezzio\Session\Ext;
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
-use Mezzio\Session\GenerateIdPersistenceInterface;
 use Mezzio\Session\InitializePersistenceIdInterface;
 use Mezzio\Session\Session;
 use Mezzio\Session\SessionCookiePersistenceInterface;
