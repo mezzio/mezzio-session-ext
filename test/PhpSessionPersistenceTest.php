@@ -694,7 +694,7 @@ class PhpSessionPersistenceTest extends TestCase
         // initial sessioncookie-less request
         $request = new ServerRequest();
 
-        for ($i = 0; $i < 3; $i += 1) {
+        for ($i = 0; $i < 3; ++$i) {
             $session  = $persistence->initializeSessionFromRequest($request);
             $response = $persistence->persistSession($session, new Response());
 
@@ -729,7 +729,7 @@ class PhpSessionPersistenceTest extends TestCase
         // initial sessioncookie-less request
         $request = new ServerRequest();
 
-        for ($i = 0; $i < 3; $i += 1) {
+        for ($i = 0; $i < 3; ++$i) {
             $session  = $persistence->initializeSessionFromRequest($request);
             $session->set('foo' . $i, 'bar' . $i);
             $response = $persistence->persistSession($session, new Response());
