@@ -77,7 +77,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     private $cacheLimiter;
 
     /** @var array */
-    private static $supported_cache_limiters = [
+    private static $supportedCacheLimiters = [
         'nocache'           => true,
         'public'            => true,
         'private'           => true,
@@ -282,7 +282,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     private function generateCacheHeaders() : array
     {
         // Unsupported cache_limiter
-        if (! isset(self::$supported_cache_limiters[$this->cacheLimiter])) {
+        if (! isset(self::$supportedCacheLimiters[$this->cacheLimiter])) {
             return [];
         }
 
