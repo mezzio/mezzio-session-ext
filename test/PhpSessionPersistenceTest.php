@@ -103,7 +103,7 @@ class PhpSessionPersistenceTest extends TestCase
         }
     }
 
-    public function startSession(string $id = null, array $options = [])
+    public function startSession(?string $id = null, array $options = []) : void
     {
         $id = $id ?: 'testing';
         session_id($id);
@@ -113,11 +113,11 @@ class PhpSessionPersistenceTest extends TestCase
         ] + $options);
     }
 
-    /**
-     * @return ServerRequestInterface
-     */
-    private function createSessionCookieRequest($sessionId = null, string $sessionName = null, array $serverParams = [])
-    {
+    private function createSessionCookieRequest(
+        ?string $sessionId = null,
+        ?string $sessionName = null,
+        array $serverParams = []
+    ) : ServerRequestInterface {
         return FigRequestCookies::set(
             new ServerRequest($serverParams),
             Cookie::create(
@@ -131,7 +131,7 @@ class PhpSessionPersistenceTest extends TestCase
      * @param array $options Custom session options (without the "session" namespace)
      * @return array Return the original (and overwritten) namespaced ini settings
      */
-    private function applyCustomSessionOptions(array $options)
+    private function applyCustomSessionOptions(array $options) : array
     {
         $ini = [];
         foreach ($options as $key => $value) {
@@ -146,14 +146,14 @@ class PhpSessionPersistenceTest extends TestCase
     /**
      * @param array $ini The original session namespaced ini settings
      */
-    private function restoreOriginalSessionIniSettings(array $ini)
+    private function restoreOriginalSessionIniSettings(array $ini) : void
     {
         foreach ($ini as $key => $value) {
             ini_set($key, $value);
         }
     }
 
-    private function assertPersistedSessionsCount(int $expectedCount): void
+    private function assertPersistedSessionsCount(int $expectedCount) : void
     {
         $files = glob("{$this->sessionSavePath}/sess_*");
         $this->assertCount($expectedCount, $files);
