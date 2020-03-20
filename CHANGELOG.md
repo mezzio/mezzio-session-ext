@@ -6,11 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#9](https://github.com/mezzio/mezzio-session-ext/pull/9) adds support for `session.cookie_samesite` PHP ini option.
 
 ### Changed
 
-- Nothing.
+- [#9](https://github.com/mezzio/mezzio-session-ext/pull/9) bumps the minimum supported PHP version to 7.3.0.
 
 ### Deprecated
 
@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#9](https://github.com/mezzio/mezzio-session-ext/pull/9) removes support for PHP versions prior to 7.3.0.
+
+- [#9](https://github.com/mezzio/mezzio-session-ext/pull/9) removes support for `dflydev/fig-cookies` v1 releases.
 
 ### Fixed
 
