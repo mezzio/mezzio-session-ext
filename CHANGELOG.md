@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.8.1 - TBD
+## 1.8.1 - 2020-03-28
 
 ### Added
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- Fixed `replace` version constraint in composer.json so repository can be used as replacement of `zendframework/zend-expressive-session-ext:^1.7.0`.
 
 ## 1.8.0 - 2020-03-20
 
