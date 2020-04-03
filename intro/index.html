@@ -254,7 +254,8 @@
 <a href="https://docs.mezzio.dev/mezzio-session/">mezzio-session</a>.</p>
 <h2 id="installation">Installation:</h2>
 <p>Run the following to install this library:</p>
-<pre class=codehilite><code class=language-bash>$ composer require mezzio/mezzio-session-ext</code></pre>
+<pre class="highlight"><code class="language-bash">$ composer require mezzio/mezzio-session-ext</code></pre>
+
 <h2 id="configuration">Configuration</h2>
 <p>If your application uses the <a href="https://docs.laminas.dev/laminas-component-installer">laminas-component-installer</a>
 Composer plugin, your configuration is complete; the shipped
@@ -273,7 +274,7 @@ when performing concurrent ajax calls in a Single Page Application. The php sess
 extension allows us to unlock the session file using the extra option <em>read_and_close</em>
 in <em>session_start</em>.</p>
 <p>This option can be enabled using the following configuration:</p>
-<pre class=codehilite><code class=language-php>// file: data/session.global.php
+<pre class="highlight"><code class="language-php">// file: data/session.global.php
 return [
     'session' =&gt; [
         'persistence' =&gt; [
@@ -283,6 +284,7 @@ return [
         ],
     ],
 ];</code></pre>
+
 <p>As for the php extension, we can use safely use this option only when we are sure
 that the session data won't be changed or when only one of the concurrent scripts
 may change it. The last script that changes and persists the session data will
