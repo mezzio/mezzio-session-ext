@@ -979,6 +979,18 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertFileNotExists($fileSession);
     }
 
+    public function testCookieIsDeletedFromBrowserIfSessionBecomesEmpty()
+    {
+        $persistence = new PhpSessionPersistence();
+        $session = new Session(['foo' => 'bar']);
+        $session->clear();
+        $response = $persistence->persistSession($session, new Response());
+
+        $cookie = $response->getHeaderLine('Set-Cookie');
+        $expected = 'Expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        $this->assertStringContainsString($expected, $cookie, 'cookie should bet set to expire in the past');
+    }
+
     public function testInitializeIdReturnsSessionUnaltered()
     {
         $persistence = new PhpSessionPersistence();
