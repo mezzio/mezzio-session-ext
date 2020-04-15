@@ -370,7 +370,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
     private function getCookieLifetime(SessionInterface $session) : int
     {
-        if (empty($session->toArray())) {
+        if (! $session->toArray()) {
             return -(time() - 1);
         }
 
