@@ -37,6 +37,9 @@ class PhpSessionPersistenceFactory
         $config = $container->has('config') ? $container->get('config') : null;
         $config = $config['session']['persistence']['ext'] ?? null;
 
-        return new PhpSessionPersistence(! empty($config['non_locking']));
+        return new PhpSessionPersistence(
+            ! empty($config['non_locking']),
+            ! empty($config['delete_cookie_on_empty_session'])
+        );
     }
 }

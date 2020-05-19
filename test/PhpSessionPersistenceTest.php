@@ -981,7 +981,7 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function testCookieIsDeletedFromBrowserIfSessionBecomesEmpty()
     {
-        $persistence = new PhpSessionPersistence();
+        $persistence = new PhpSessionPersistence(false, true);
         $session = new Session(['foo' => 'bar']);
         $session->clear();
         $response = $persistence->persistSession($session, new Response());

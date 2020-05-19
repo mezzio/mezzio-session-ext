@@ -73,6 +73,13 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     private $nonLocking;
 
     /**
+     * Delete cookie from browser when session becomes empty?
+     *
+     * @var bool
+     */
+    private $deleteCookieOnEmptySession;
+
+    /**
      * The time-to-live for cached session pages in minutes as specified in php
      * ini settings. This has no effect for 'nocache' limiter.
      *
@@ -107,10 +114,12 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      * the session set-cookie header when the session data is persisted.
      *
      * @param bool $nonLocking use the non locking mode during initialization?
+     * @param bool $deleteCookieOnEmptySession delete cookie from browser when session becomes empty?
      */
-    public function __construct(bool $nonLocking = false)
+    public function __construct(bool $nonLocking = false, bool $deleteCookieOnEmptySession = false)
     {
         $this->nonLocking = $nonLocking;
+        $this->deleteCookieOnEmptySession = $deleteCookieOnEmptySession;
 
         $this->cacheLimiter = ini_get('session.cache_limiter');
         $this->cacheExpire  = (int) ini_get('session.cache_expire');
@@ -123,6 +132,15 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     public function isNonLocking() : bool
     {
         return $this->nonLocking;
+    }
+
+    /**
+     * @internal
+     * @return bool whether we delete cookie from browser when session becomes empty
+     */
+    public function isDeleteCookieOnEmptySession(): bool
+    {
+        return $this->deleteCookieOnEmptySession;
     }
 
     public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface
@@ -370,7 +388,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
     private function getCookieLifetime(SessionInterface $session) : int
     {
-        if (! $session->toArray()) {
+        if ($this->deleteCookieOnEmptySession && ! $session->toArray()) {
             return -(time() - 1);
         }
 

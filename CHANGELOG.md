@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#13](https://github.com/mezzio/mezzio-session-ext/pull/13) adds the ability to delete cookie in browser when session becomes empty; see [the documentation for details on configuration of this feature](https://docs.laminas.dev/laminas-experssive-session-ext/intro/#enabling-deletion-of-cookie-in-browser).
 
 ### Changed
 

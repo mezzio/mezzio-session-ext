@@ -53,6 +53,33 @@ that the session data won't be changed or when only one of the concurrent script
 may change it. The last script that changes and persists the session data will
 overwrite any previous change.
 
+### Enabling deletion of cookie in browser
+
+The default behaviour of the php session extension is to never delete the cookie
+in the browser. It is possible to automatically delete the cookie in the browser
+when the session becomes empty.
+
+This option can be enabled using the following configuration:
+
+```php
+// file: data/session.global.php
+return [
+    'session' => [
+        'persistence' => [
+            'ext' => [
+                'delete_cookie_on_empty_session' => true, // true|false
+            ],
+        ],
+    ],
+];
+```
+
+Then whenever you call `$session->clear();`, the cookie will be deleted from in
+the browser in addition to deleting session on the server.
+
+This is the recommended configuration to prevent leftover in the browser, unless
+you have advanced handling of cookie existence in your application or web server.
+
 ## Usage
 
 In most cases, usage will be via `Mezzio\Session\SessionMiddleware`,
