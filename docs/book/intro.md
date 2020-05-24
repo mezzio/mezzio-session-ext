@@ -74,11 +74,8 @@ return [
 ];
 ```
 
-Then whenever you call `$session->clear();`, the cookie will be deleted from in
-the browser in addition to deleting session on the server.
-
-This is the recommended configuration to prevent leftover in the browser, unless
-you have advanced handling of cookie existence in your application or web server.
+Then whenever you call `$session->clear()`, the cookie will be deleted in
+the browser, in addition of the session being deleted on the server.
 
 ## Usage
 
