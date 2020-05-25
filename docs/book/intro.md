@@ -36,7 +36,7 @@ in *session_start*.
 This option can be enabled using the following configuration:
 
 ```php
-// file: data/session.global.php
+// file: config/autoload/session.global.php
 return [
     'session' => [
         'persistence' => [
@@ -62,7 +62,7 @@ when the session becomes empty.
 This option can be enabled using the following configuration:
 
 ```php
-// file: data/session.global.php
+// file: config/autoload/session.global.php
 return [
     'session' => [
         'persistence' => [
