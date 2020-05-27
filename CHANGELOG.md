@@ -2,33 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.9.0 - TBD
+## 1.9.0 - 2020-05-27
 
 ### Added
 
 - [#13](https://github.com/mezzio/mezzio-session-ext/pull/13) adds the ability to delete the session cookie in the browser once the session becomes empty; see [the documentation for details on configuration of this feature](https://docs.mezzio.dev/mezzio-session-ext/intro/#enabling-deletion-of-cookie-in-browser).
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.8.2 - TBD
-
-### Added
-
-- Nothing.
 
 ### Changed
 
@@ -136,7 +114,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#7](https://github.com/mezzio/mezzio-session-ext/pull/7) fixes destroying session on regenerate when session is active.
 
-## 1.7.0 - TBD
+## 1.7.0 - 2019-10-16
 
 ### Added
 
