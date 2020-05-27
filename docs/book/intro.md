@@ -23,15 +23,15 @@ Otherwise, you will need to map `Mezzio\Session\SessionPersistenceInterface`
 to `Mezzio\Session\Ext\PhpSessionPersistence` in your dependency
 injection container.
 
-### Enabling non locking sessions
+### Enabling non-locking sessions
 
-The default behaviour of the php session extension is to lock the session file
-until *session_write_close* is called - usually at the end of script execution -
-in order to safely store the session data. This has the side effect of blocking
-every other script that request access to the same session file as for instance
-when performing concurrent ajax calls in a Single Page Application. The php session
-extension allows us to unlock the session file using the extra option *read_and_close*
-in *session_start*.
+The default behaviour of the PHP session extension is to lock the session file
+until `session_write_close()` is called — usually at the end of script execution
+— in order to safely store the session data. This has the side effect of
+blocking every other script that request access to the same session file — for
+instance, when performing concurrent calls via a Single Page Application. The
+PHP session extension allows us to unlock the session file using the extra
+option `read_and_close` in `session_start()`.
 
 This option can be enabled using the following configuration:
 
@@ -41,21 +41,21 @@ return [
     'session' => [
         'persistence' => [
             'ext' => [
-                'non_locking' => true, // true|false, true => read_and_close = true
+                'non_locking' => true, // true|false, true => marks read_and_close as true
             ],
         ],
     ],
 ];
 ```
 
-As for the php extension, we can use safely use this option only when we are sure
+As for the PHP extension, we can use safely use this option only when we are sure
 that the session data won't be changed or when only one of the concurrent scripts
 may change it. The last script that changes and persists the session data will
 overwrite any previous change.
 
 ### Enabling deletion of cookie in browser
 
-The default behaviour of the php session extension is to never delete the cookie
+The default behaviour of the PHP session extension is to never delete the cookie
 in the browser. It is possible to automatically delete the cookie in the browser
 when the session becomes empty.
 
@@ -75,7 +75,7 @@ return [
 ```
 
 Then whenever you call `$session->clear()`, the cookie will be deleted in
-the browser, in addition of the session being deleted on the server.
+the browser, in addition to the session being deleted on the server.
 
 ## Usage
 
