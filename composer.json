@@ -61,7 +61,5 @@
     },
     "replace": {
         "zendframework/zend-expressive-session-ext": "^1.7.0"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
