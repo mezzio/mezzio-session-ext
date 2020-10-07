@@ -10,33 +10,24 @@ declare(strict_types=1);
 
 namespace Mezzio\Session\Ext;
 
-use Dflydev\FigCookies\FigRequestCookies;
-use Dflydev\FigCookies\FigResponseCookies;
-use Dflydev\FigCookies\SetCookie;
-use Dflydev\FigCookies\Modifier\SameSite;
 use Mezzio\Session\InitializePersistenceIdInterface;
+use Mezzio\Session\Persistence\CacheHeadersGeneratorTrait;
+use Mezzio\Session\Persistence\SessionCookieAwareTrait;
 use Mezzio\Session\Session;
-use Mezzio\Session\SessionCookiePersistenceInterface;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionPersistenceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function bin2hex;
-use function filemtime;
 use function filter_var;
-use function getlastmod;
-use function gmdate;
 use function ini_get;
 use function random_bytes;
 use function session_destroy;
 use function session_id;
-use function session_name;
 use function session_start;
 use function session_status;
 use function session_write_close;
-use function sprintf;
-use function time;
 
 use const FILTER_NULL_ON_FAILURE;
 use const FILTER_VALIDATE_BOOLEAN;
@@ -57,13 +48,8 @@ use const PHP_SESSION_ACTIVE;
  */
 class PhpSessionPersistence implements InitializePersistenceIdInterface, SessionPersistenceInterface
 {
-    /**
-     * This unusual past date value is taken from the php-engine source code and
-     * used "as is" for consistency.
-     */
-    public const CACHE_PAST_DATE = 'Thu, 19 Nov 1981 08:52:00 GMT';
-
-    public const HTTP_DATE_FORMAT = 'D, d M Y H:i:s T';
+    use CacheHeadersGeneratorTrait;
+    use SessionCookieAwareTrait;
 
     /**
      * Use non locking mode during session initialization?
@@ -71,38 +57,6 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      * @var bool
      */
     private $nonLocking;
-
-    /**
-     * Delete cookie from browser when session becomes empty?
-     *
-     * @var bool
-     */
-    private $deleteCookieOnEmptySession;
-
-    /**
-     * The time-to-live for cached session pages in minutes as specified in php
-     * ini settings. This has no effect for 'nocache' limiter.
-     *
-     * @var int
-     */
-    private $cacheExpire;
-
-    /**
-     * The cache control method used for session pages as specified in php ini
-     * settings. It may be one of the following values: 'nocache', 'private',
-     * 'private_no_expire', or 'public'.
-     *
-     * @var string
-     */
-    private $cacheLimiter;
-
-    /** @var array */
-    private static $supportedCacheLimiters = [
-        'nocache'           => true,
-        'public'            => true,
-        'private'           => true,
-        'private_no_expire' => true,
-    ];
 
     /**
      * Memorize session ini settings before starting the request.
@@ -121,8 +75,26 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         $this->nonLocking = $nonLocking;
         $this->deleteCookieOnEmptySession = $deleteCookieOnEmptySession;
 
+        // Get session cache ini settings
         $this->cacheLimiter = ini_get('session.cache_limiter');
         $this->cacheExpire  = (int) ini_get('session.cache_expire');
+
+        // Get session cookie ini settings
+        $this->cookieName     = ini_get('session.name');
+        $this->cookieLifetime = (int) ini_get('session.cookie_lifetime');
+        $this->cookiePath     = ini_get('session.cookie_path');
+        $this->cookieDomain   = ini_get('session.cookie_domain');
+        $this->cookieSecure   = filter_var(
+            ini_get('session.cookie_secure'),
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE
+        );
+        $this->cookieHttpOnly = filter_var(
+            ini_get('session.cookie_httponly'),
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE
+        );
+        $this->cookieSameSite = ini_get('session.cookie_samesite');
     }
 
     /**
@@ -134,18 +106,9 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         return $this->nonLocking;
     }
 
-    /**
-     * @internal
-     * @return bool whether we delete cookie from browser when session becomes empty
-     */
-    public function isDeleteCookieOnEmptySession(): bool
-    {
-        return $this->deleteCookieOnEmptySession;
-    }
-
     public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface
     {
-        $sessionId = FigRequestCookies::get($request, session_name())->getValue() ?? '';
+        $sessionId = $this->getSessionCookieValueFromRequest($request);
         if ($sessionId) {
             $this->startSession($sessionId, [
                 'read_and_close' => $this->nonLocking,
@@ -187,8 +150,8 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
             return $response;
         }
 
-        $response = $this->addSessionCookie($response, $id, $session);
-        $response = $this->addCacheHeaders($response);
+        $response = $this->addSessionCookieHeaderToResponse($response, $id, $session);
+        $response = $this->addCacheHeadersToResponse($response);
 
         return $response;
     }
@@ -240,165 +203,5 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     private function generateSessionId() : string
     {
         return bin2hex(random_bytes(16));
-    }
-
-    /**
-     * Add a session set-cookie to the response
-     *
-     * @param string $id The id of the last started session
-     */
-    private function addSessionCookie(
-        ResponseInterface $response,
-        string $id,
-        SessionInterface $session
-    ) : ResponseInterface {
-        return FigResponseCookies::set(
-            $response,
-            $this->createSessionCookie(session_name(), $id, $this->getCookieLifetime($session))
-        );
-    }
-
-    /**
-     * Build a SetCookie parsing boolean ini settings
-     *
-     * @param string $name The session name as the cookie name
-     * @param string $id The session id as the cookie value
-     * @param int $cookieLifetime The session cookie lifetime
-     */
-    private function createSessionCookie(string $name, string $id, int $cookieLifetime = 0) : SetCookie
-    {
-        $secure = filter_var(
-            ini_get('session.cookie_secure'),
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        );
-        $httpOnly = filter_var(
-            ini_get('session.cookie_httponly'),
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        );
-
-        $sessionCookie = SetCookie::create($name)
-            ->withValue($id)
-            ->withPath(ini_get('session.cookie_path'))
-            ->withDomain(ini_get('session.cookie_domain'))
-            ->withSecure($secure)
-            ->withHttpOnly($httpOnly);
-
-        $cookieSameSite = ini_get('session.cookie_samesite');
-        if ($cookieSameSite) {
-            $sessionCookie = $sessionCookie->withSameSite(SameSite::fromString($cookieSameSite));
-        }
-
-        return $cookieLifetime
-            ? $sessionCookie->withExpires(time() + $cookieLifetime)
-            : $sessionCookie;
-    }
-
-    /**
-     * Add cache headers to the response when needed
-     */
-    private function addCacheHeaders(ResponseInterface $response) : ResponseInterface
-    {
-        if (! $this->cacheLimiter || $this->responseAlreadyHasCacheHeaders($response)) {
-            return $response;
-        }
-
-        $cacheHeaders = $this->generateCacheHeaders();
-        foreach ($cacheHeaders as $name => $value) {
-            if ($value !== false) {
-                $response = $response->withHeader($name, $value);
-            }
-        }
-
-        return $response;
-    }
-
-    /**
-     * Generate cache http headers for this instance's session cache_limiter and
-     * cache_expire values
-     */
-    private function generateCacheHeaders() : array
-    {
-        // Unsupported cache_limiter
-        if (! isset(self::$supportedCacheLimiters[$this->cacheLimiter])) {
-            return [];
-        }
-
-        // cache_limiter: 'nocache'
-        if ($this->cacheLimiter === 'nocache') {
-            return [
-                'Expires'       => self::CACHE_PAST_DATE,
-                'Cache-Control' => 'no-store, no-cache, must-revalidate',
-                'Pragma'        => 'no-cache',
-            ];
-        }
-
-        $maxAge       = 60 * $this->cacheExpire;
-        $lastModified = $this->getLastModified();
-
-        // cache_limiter: 'public'
-        if ($this->cacheLimiter === 'public') {
-            return [
-                'Expires'       => gmdate(self::HTTP_DATE_FORMAT, time() + $maxAge),
-                'Cache-Control' => sprintf('public, max-age=%d', $maxAge),
-                'Last-Modified' => $lastModified,
-            ];
-        }
-
-        // cache_limiter: 'private'
-        if ($this->cacheLimiter === 'private') {
-            return [
-                'Expires'       => self::CACHE_PAST_DATE,
-                'Cache-Control' => sprintf('private, max-age=%d', $maxAge),
-                'Last-Modified' => $lastModified,
-            ];
-        }
-
-        // last possible case, cache_limiter = 'private_no_expire'
-        return [
-            'Cache-Control' => sprintf('private, max-age=%d', $maxAge),
-            'Last-Modified' => $lastModified,
-        ];
-    }
-
-    /**
-     * Return the Last-Modified header line based on main script of execution
-     * modified time. If unable to get a valid timestamp we use this class file
-     * modification time as fallback.
-     *
-     * @return string|false
-     */
-    private function getLastModified()
-    {
-        $lastmod = getlastmod() ?: filemtime(__FILE__);
-        return $lastmod ? gmdate(self::HTTP_DATE_FORMAT, $lastmod) : false;
-    }
-
-    /**
-     * Check if the response already carries cache headers
-     */
-    private function responseAlreadyHasCacheHeaders(ResponseInterface $response) : bool
-    {
-        return $response->hasHeader('Expires')
-            || $response->hasHeader('Last-Modified')
-            || $response->hasHeader('Cache-Control')
-            || $response->hasHeader('Pragma');
-    }
-
-    private function getCookieLifetime(SessionInterface $session) : int
-    {
-        if ($this->deleteCookieOnEmptySession && ! $session->toArray()) {
-            return -(time() - 1);
-        }
-
-        $lifetime = (int) ini_get('session.cookie_lifetime');
-        if ($session instanceof SessionCookiePersistenceInterface
-            && $session->has(SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY)
-        ) {
-            $lifetime = $session->getSessionLifetime();
-        }
-
-        return $lifetime > 0 ? $lifetime : 0;
     }
 }
