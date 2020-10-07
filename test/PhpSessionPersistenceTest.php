@@ -18,6 +18,8 @@ use Dflydev\FigCookies\SetCookies;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\ServerRequest;
 use Mezzio\Session\Ext\PhpSessionPersistence;
+use Mezzio\Session\Persistence\CacheHeadersGeneratorTrait;
+use Mezzio\Session\Persistence\Http;
 use Mezzio\Session\Session;
 use Mezzio\Session\SessionCookiePersistenceInterface;
 use PHPUnit\Framework\TestCase;
@@ -58,7 +60,13 @@ use const PHP_SESSION_NONE;
  */
 class PhpSessionPersistenceTest extends TestCase
 {
-    /** @var PhpSessionPersistence */
+    /**
+     * Generic persistance instance to be used when custom ini-settings are not
+     * applied. In that case instantiate a fresh instance after applying custom
+     * ini-settings.
+     *
+     * @var PhpSessionPersistence
+     */
     private $persistence;
 
     /** @var array */
@@ -212,28 +220,45 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function testPersistSessionGeneratesCookieWithNewSessionIdIfSessionWasRegenerated()
     {
-        $sessionName = 'regenerated-session';
-        session_name($sessionName);
+        $sessionName = 'REGENERATEDSESSID';
+        $ini = $this->applyCustomSessionOptions([
+            'name' => $sessionName,
+        ]);
+
+        // we must create a new instance to have the correct cookieName from the
+        // previously customized ini-settings
+        $persistence = new PhpSessionPersistence();
 
         $request = $this->createSessionCookieRequest('original-id', $sessionName);
 
-        // first request of original session cookie
-        $session = $this->persistence->initializeSessionFromRequest($request);
-        $response = new Response();
-        $this->persistence->persistSession($session, $response);
-
+        // Emulate a session-middleware process() excution:
+        //
+        // 1. init from request with original session cookie
+        $session = $persistence->initializeSessionFromRequest($request);
+        // 2. emulate session regeneration in inner middleware (user code)
         $session = $session->regenerate();
+        // 3. emulate returning a response from inner middleware (user code)
+        $response = new Response();
+        // 3. persist session
+        $returnedResponse = $persistence->persistSession($session, $response);
 
-        // emulate second request that would usually occur once session has been regenerated
-        $returnedResponse = $this->persistence->persistSession($session, $response);
+        // ...finally make some assertions about the returned response
+
+        // assert that the response is an altered clone
         $this->assertNotSame($response, $returnedResponse);
-
-        $setCookie = FigResponseCookies::get($returnedResponse, session_name());
+        // assert that the response has the session-cookie header
+        $setCookie = FigResponseCookies::get($returnedResponse, $sessionName);
         $this->assertInstanceOf(SetCookie::class, $setCookie);
+        // assert that the response set-cookie value differes from the original id
         $this->assertNotSame('original-id', $setCookie->getValue());
+        // the session was restarted with the regenerated value, assert that the
+        // last session-id matches the response set-cookie value
         $this->assertSame(session_id(), $setCookie->getValue());
-
+        // we did not alter the session-data, assert that the data loaded by
+        // php-ext matches the session data
         $this->assertSame($session->toArray(), $_SESSION);
+
+        $this->restoreOriginalSessionIniSettings($ini);
     }
 
     /**
@@ -296,7 +321,7 @@ class PhpSessionPersistenceTest extends TestCase
         $response = $persistence->persistSession($session, new Response());
 
         // expected values
-        $expires = PhpSessionPersistence::CACHE_PAST_DATE;
+        $expires = Http::CACHE_PAST_DATE;
         $control = 'no-store, no-cache, must-revalidate';
         $pragma  = 'no-cache';
 
@@ -361,7 +386,7 @@ class PhpSessionPersistenceTest extends TestCase
         $response = $persistence->persistSession($session, new Response());
 
         // expected values
-        $expires = PhpSessionPersistence::CACHE_PAST_DATE;
+        $expires = Http::CACHE_PAST_DATE;
         $control = sprintf('private, max-age=%d', $maxAge);
 
         $this->assertSame($expires, $response->getHeaderLine('Expires'));
@@ -404,7 +429,7 @@ class PhpSessionPersistenceTest extends TestCase
         ]);
 
         $response = new Response('php://memory', 200, [
-            'Last-Modified' => gmdate(PhpSessionPersistence::HTTP_DATE_FORMAT),
+            'Last-Modified' => gmdate(Http::DATE_FORMAT),
         ]);
 
         $persistence = new PhpSessionPersistence();
@@ -434,15 +459,7 @@ class PhpSessionPersistenceTest extends TestCase
 
         $response = $persistence->persistSession($session, new Response());
 
-        $lastmod = getlastmod();
-        if ($lastmod === false) {
-            $rc = new ReflectionClass($persistence);
-            $classFile = $rc->getFileName();
-            $lastmod = filemtime($classFile);
-        }
-
-        $lastModified = $lastmod ? gmdate(PhpSessionPersistence::HTTP_DATE_FORMAT, $lastmod) : false;
-
+        $lastModified = $this->getExpectedLastModified();
         $expectedHeaderLine = $lastModified === false ? '' : $lastModified;
 
         $this->assertSame($expectedHeaderLine, $response->getHeaderLine('Last-Modified'));
@@ -800,18 +817,19 @@ class PhpSessionPersistenceTest extends TestCase
         bool $expectedHttpOnly
     ) {
         $ini = $this->applyCustomSessionOptions([
+            'name'            => 'SETCOOKIESESSIONID',
             'cookie_secure'   => $secureIni,
             'cookie_httponly' => $httpOnlyIni,
         ]);
 
         $persistence = new PhpSessionPersistence();
 
-        $createSessionCookie = new ReflectionMethod($persistence, 'createSessionCookie');
-        $createSessionCookie->setAccessible(true);
+        $createSessionCookieForResponse = new ReflectionMethod($persistence, 'createSessionCookieForResponse');
+        $createSessionCookieForResponse->setAccessible(true);
 
-        $setCookie = $createSessionCookie->invokeArgs(
+        $setCookie = $createSessionCookieForResponse->invokeArgs(
             $persistence,
-            ['SETCOOKIESESSIONID', 'set-cookie-test-value']
+            ['set-cookie-test-value']
         );
 
         $this->assertSame($expectedSecure, $setCookie->getSecure());
@@ -998,5 +1016,20 @@ class PhpSessionPersistenceTest extends TestCase
         $actual = $persistence->initializeId($session);
 
         $this->assertSame($session, $actual);
+    }
+
+    /**
+     * @return string|false
+     */
+    private function getExpectedLastModified()
+    {
+        $lastmod = getlastmod();
+        if ($lastmod === false) {
+            $rc = new ReflectionClass(CacheHeadersGeneratorTrait::class);
+            $classFile = $rc->getFileName();
+            $lastmod = filemtime($classFile);
+        }
+
+        return $lastmod ? gmdate(Http::DATE_FORMAT, $lastmod) : false;
     }
 }
