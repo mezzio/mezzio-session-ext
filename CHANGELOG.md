@@ -2,27 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.10.0 - TBD
+## 1.10.0 - 2020-10-08
 
 ### Added
 
 - [#17](https://github.com/mezzio/mezzio-session-ext/pull/17) adds support for PHP 8.
 
-### Changed
 
-- Nothing.
+-----
 
-### Deprecated
+### Release Notes for [1.10.0](https://github.com/mezzio/mezzio-session-ext/milestone/4)
 
-- Nothing.
 
-### Removed
 
-- Nothing.
+### 1.10.0
 
-### Fixed
+- Total issues resolved: **2**
+- Total pull requests resolved: **3**
+- Total contributors: **3**
 
-- Nothing.
+#### Enhancement
+
+ - [18: Add Psalm integration](https://github.com/mezzio/mezzio-session-ext/pull/18) thanks to @weierophinney and @boesing
+ - [17: Add PHP 8 Support](https://github.com/mezzio/mezzio-session-ext/pull/17) thanks to @weierophinney and @boesing
+ - [16: 1.9.x use persistence traits](https://github.com/mezzio/mezzio-session-ext/pull/16) thanks to @pine3ree
 
 ## 1.9.0 - 2020-05-27
 
