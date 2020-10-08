@@ -207,7 +207,7 @@ class PhpSessionPersistenceTest extends TestCase
 
         // check that php-session was started and $session data persisted into it
         $this->assertTrue(isset($_SESSION));
-        $this->assertRegExp('/^[a-f0-9]{32}$/i', session_id());
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/i', session_id());
         $this->assertSame($session->toArray(), $_SESSION);
 
         // check the returned response
@@ -994,7 +994,7 @@ class PhpSessionPersistenceTest extends TestCase
         $session     = $session->regenerate();
         $persistence->persistSession($session, new Response());
 
-        $this->assertFileNotExists($fileSession);
+        $this->assertFileDoesNotExist($fileSession);
     }
 
     public function testCookieIsDeletedFromBrowserIfSessionBecomesEmpty()

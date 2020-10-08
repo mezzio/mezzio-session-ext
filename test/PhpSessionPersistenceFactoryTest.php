@@ -17,48 +17,78 @@ use Psr\Container\ContainerInterface;
 
 class PhpSessionPersistenceFactoryTest extends TestCase
 {
-    public function testFactoryConfigProducesPhpSessionPersistenceInterfaceService() : void
+    public function testFactoryProducesPhpSessionPersistenceServiceWithDefaultsInAbsenceOfConfig(): void
     {
-        $container = $this->prophesize(ContainerInterface::class);
-        $factory = new PhpSessionPersistenceFactory();
+        $container = $this->createMock(ContainerInterface::class);
+        $factory   = new PhpSessionPersistenceFactory();
 
         // test php-session-persistence with missing config
-        $container->has('config')->willReturn(false);
-        $persistence = $factory($container->reveal());
+        $container
+            ->expects($this->once())
+            ->method('has')
+            ->with('config')
+            ->willReturn(false);
+        
+        $persistence = $factory($container);
         $this->assertInstanceOf(PhpSessionPersistence::class, $persistence);
         $this->assertFalse($persistence->isNonLocking());
         $this->assertFalse($persistence->isDeleteCookieOnEmptySession());
+    }
 
-        // test php-session-persistence with non-locking config set to false and true
-        foreach ([false, true] as $nonLocking) {
-            $container->has('config')->willReturn(true);
-            $container->get('config')->willReturn([
+    public function configProvider(): iterable
+    {
+        yield 'non_locking disabled' => [
+            'config'       => ['non_locking' => false],
+            'expected'     => false,
+            'methodToTest' => 'isNonLocking',
+        ];
+        yield 'non_locking enabled' => [
+            'config'       => ['non_locking' => true],
+            'expected'     => true,
+            'methodToTest' => 'isNonLocking',
+        ];
+        yield 'delete_cookie_on_empty_session disabled' => [
+            'config'       => ['delete_cookie_on_empty_session' => false],
+            'expected'     => false,
+            'methodToTest' => 'isDeleteCookieOnEmptySession',
+        ];
+        yield 'delete_cookie_on_empty_session enabled' => [
+            'config'       => ['delete_cookie_on_empty_session' => true],
+            'expected'     => true,
+            'methodToTest' => 'isDeleteCookieOnEmptySession',
+        ];
+    }
+
+    /**
+     * @dataProvider configProvider
+     */
+    public function testFactoryConfigProducesPhpSessionPersistenceInterfaceService(
+        array $config,
+        bool $expected,
+        string $methodToTest
+    ) : void {
+        $container = $this->createMock(ContainerInterface::class);
+        $factory   = new PhpSessionPersistenceFactory();
+
+        // test php-session-persistence with missing config
+        $container
+            ->expects($this->once())
+            ->method('has')
+            ->with('config')
+            ->willReturn(true);
+        $container
+            ->expects($this->once())
+            ->method('get')
+            ->with('config')
+            ->willReturn([
                 'session' => [
                     'persistence' => [
-                        'ext' => [
-                            'non_locking' => $nonLocking,
-                        ],
+                        'ext' => $config,
                     ],
                 ],
             ]);
-            $persistence = $factory($container->reveal());
-            $this->assertSame($nonLocking, $persistence->isNonLocking());
-        }
 
-        // test php-session-persistence with delete_cookie_on_empty_session config set to false and true
-        foreach ([false, true] as $deleteCookieOnEmptySession) {
-            $container->has('config')->willReturn(true);
-            $container->get('config')->willReturn([
-                'session' => [
-                    'persistence' => [
-                        'ext' => [
-                            'delete_cookie_on_empty_session' => $deleteCookieOnEmptySession,
-                        ],
-                    ],
-                ],
-            ]);
-            $persistence = $factory($container->reveal());
-            $this->assertSame($deleteCookieOnEmptySession, $persistence->isDeleteCookieOnEmptySession());
-        }
+        $persistence = $factory($container);
+        $this->assertSame($expected, $persistence->$methodToTest());
     }
 }
