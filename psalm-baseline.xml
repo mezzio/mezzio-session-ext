@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.16@d03e5ef057d6adc656c0ff7e166c50b73b4f48f3">
+  <file src="src/PhpSessionPersistence.php">
+    <MixedArgument occurrences="3">
+      <code>$id</code>
+      <code>$id</code>
+      <code>$session-&gt;getId()</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="2">
+      <code>$id</code>
+      <code>$id</code>
+    </MixedAssignment>
+    <PossiblyNullPropertyAssignmentValue occurrences="2"/>
+    <PropertyNotSetInConstructor occurrences="1">
+      <code>PhpSessionPersistence</code>
+    </PropertyNotSetInConstructor>
+    <UndefinedInterfaceMethod occurrences="3">
+      <code>getId</code>
+      <code>getId</code>
+      <code>getId</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/PhpSessionPersistenceFactory.php">
+    <MixedAssignment occurrences="2">
+      <code>$config</code>
+      <code>$config</code>
+    </MixedAssignment>
+  </file>
+  <file src="test/ConfigProviderTest.php">
+    <RedundantCondition occurrences="1">
+      <code>assertIsArray</code>
+    </RedundantCondition>
+  </file>
+  <file src="test/PhpSessionPersistenceFactoryTest.php">
+    <InternalMethod occurrences="2">
+      <code>isDeleteCookieOnEmptySession</code>
+      <code>isNonLocking</code>
+    </InternalMethod>
+    <MixedInferredReturnType occurrences="1">
+      <code>iterable</code>
+    </MixedInferredReturnType>
+    <RedundantCondition occurrences="1">
+      <code>assertInstanceOf</code>
+    </RedundantCondition>
+  </file>
+  <file src="test/PhpSessionPersistenceTest.php">
+    <ArgumentTypeCoercion occurrences="2">
+      <code>$request</code>
+      <code>$request</code>
+    </ArgumentTypeCoercion>
+    <InvalidArgument occurrences="1">
+      <code>$originalLifetime</code>
+    </InvalidArgument>
+    <LessSpecificReturnStatement occurrences="1"/>
+    <MixedArgument occurrences="3">
+      <code>$setCookie-&gt;getValue()</code>
+      <code>$setCookie-&gt;getValue()</code>
+      <code>$value</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>$key</code>
+    </MixedArgumentTypeCoercion>
+    <MixedAssignment occurrences="3">
+      <code>$setCookie</code>
+      <code>$value</code>
+      <code>$value</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="1">
+      <code>array</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="4">
+      <code>getHttpOnly</code>
+      <code>getSecure</code>
+      <code>getValue</code>
+      <code>getValue</code>
+    </MixedMethodCall>
+    <MoreSpecificReturnType occurrences="1">
+      <code>ServerRequestInterface</code>
+    </MoreSpecificReturnType>
+    <NullArgument occurrences="2">
+      <code>$_SESSION</code>
+      <code>$_SESSION</code>
+    </NullArgument>
+    <NullArrayAccess occurrences="2">
+      <code>$_SESSION[$name]</code>
+      <code>$_SESSION[$name]</code>
+    </NullArrayAccess>
+    <PossiblyNullArgument occurrences="1">
+      <code>$regeneratedId</code>
+    </PossiblyNullArgument>
+    <RedundantCondition occurrences="8">
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+    </RedundantCondition>
+    <TypeDoesNotContainType occurrences="2">
+      <code>assertSame</code>
+      <code>assertSame</code>
+    </TypeDoesNotContainType>
+    <UndefinedInterfaceMethod occurrences="6">
+      <code>getId</code>
+      <code>getId</code>
+      <code>getId</code>
+      <code>getId</code>
+      <code>persistSessionFor</code>
+      <code>persistSessionFor</code>
+    </UndefinedInterfaceMethod>
+  </file>
+</files>

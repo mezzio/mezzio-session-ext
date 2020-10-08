@@ -161,7 +161,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertCount($expectedCount, $files);
     }
 
-    public function testInitializeSessionFromRequestDoesNotStartPhpSessionIfNoSessionCookiePresent()
+    public function testInitializeSessionFromRequestDoesNotStartPhpSessionIfNoSessionCookiePresent(): void
     {
         $this->assertSame(PHP_SESSION_NONE, session_status());
 
@@ -174,7 +174,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertFalse(isset($_SESSION));
     }
 
-    public function testInitializeSessionFromRequestUsesSessionCookieFromRequest()
+    public function testInitializeSessionFromRequestUsesSessionCookieFromRequest(): void
     {
         $this->assertSame(PHP_SESSION_NONE, session_status());
 
@@ -187,7 +187,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame('use-this-id', session_id());
     }
 
-    public function testPersistSessionStartsPhpSessionEvenIfNoSessionCookiePresentButSessionChanged()
+    public function testPersistSessionStartsPhpSessionEvenIfNoSessionCookiePresentButSessionChanged(): void
     {
         // request without session-cookie
         $request = new ServerRequest();
@@ -218,7 +218,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame(session_id(), $setCookie->getValue());
     }
 
-    public function testPersistSessionGeneratesCookieWithNewSessionIdIfSessionWasRegenerated()
+    public function testPersistSessionGeneratesCookieWithNewSessionIdIfSessionWasRegenerated(): void
     {
         $sessionName = 'REGENERATEDSESSID';
         $ini         = $this->applyCustomSessionOptions([
@@ -264,7 +264,7 @@ class PhpSessionPersistenceTest extends TestCase
     /**
      * If Session COOKIE is present, persistSession() method must return Response with Set-Cookie header
      */
-    public function testPersistSessionReturnsResponseWithSetCookieHeaderIfSessionCookiePresent()
+    public function testPersistSessionReturnsResponseWithSetCookieHeaderIfSessionCookiePresent(): void
     {
         $request = $this->createSessionCookieRequest('use-this-id');
         $session = $this->persistence->initializeSessionFromRequest($request);
@@ -288,7 +288,7 @@ class PhpSessionPersistenceTest extends TestCase
     /**
      * If Session COOKIE is not present, persistSession() method must return the original Response
      */
-    public function testPersistSessionReturnsOriginalResponseIfNoSessionCookiePresent()
+    public function testPersistSessionReturnsOriginalResponseIfNoSessionCookiePresent(): void
     {
         $this->startSession();
         $session  = new Session([]);
@@ -298,7 +298,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame($response, $returnedResponse);
     }
 
-    public function testPersistSessionIfSessionHasContents()
+    public function testPersistSessionIfSessionHasContents(): void
     {
         $this->startSession();
         $session = new Session(['foo' => 'bar']);
@@ -306,7 +306,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame($session->toArray(), $_SESSION);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsNocache()
+    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsNocache(): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cache_limiter' => 'nocache',
@@ -332,7 +332,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsPublic()
+    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsPublic(): void
     {
         $expire = 111;
         $maxAge = 60 * $expire;
@@ -367,7 +367,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsPrivate()
+    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsPrivate(): void
     {
         $expire = 222;
         $maxAge = 60 * $expire;
@@ -395,7 +395,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsPrivateNoExpire()
+    public function testPersistSessionReturnsExpectedResponseWithCacheHeadersIfCacheLimiterIsPrivateNoExpire(): void
     {
         $expire = 333;
         $maxAge = 60 * $expire;
@@ -422,7 +422,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithoutAddedHeadersIfAlreadyHasAny()
+    public function testPersistSessionReturnsExpectedResponseWithoutAddedHeadersIfAlreadyHasAny(): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cache_limiter' => 'nocache',
@@ -445,7 +445,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionInjectsExpectedLastModifiedHeader()
+    public function testPersistSessionInjectsExpectedLastModifiedHeader(): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cache_limiter' => 'public',
@@ -470,7 +470,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithoutAddedCacheHeadersIfEmptyCacheLimiter()
+    public function testPersistSessionReturnsExpectedResponseWithoutAddedCacheHeadersIfEmptyCacheLimiter(): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cache_limiter' => '',
@@ -489,7 +489,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testPersistSessionReturnsExpectedResponseWithoutAddedCacheHeadersIfUnsupportedCacheLimiter()
+    public function testPersistSessionReturnsExpectedResponseWithoutAddedCacheHeadersIfUnsupportedCacheLimiter(): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cache_limiter' => 'unsupported',
@@ -508,7 +508,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testCookiesNotSetWithoutRegenerate()
+    public function testCookiesNotSetWithoutRegenerate(): void
     {
         $persistence = new PhpSessionPersistence();
         $request     = new ServerRequest();
@@ -520,7 +520,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertFalse($response->hasHeader('Set-Cookie'));
     }
 
-    public function testCookiesSetWithoutRegenerate()
+    public function testCookiesSetWithoutRegenerate(): void
     {
         $persistence = new PhpSessionPersistence();
         $request     = new ServerRequest();
@@ -548,7 +548,7 @@ class PhpSessionPersistenceTest extends TestCase
     /**
      * @dataProvider sameSitePossibleValues
      */
-    public function testCookieHasSameSite(?string $sameSite)
+    public function testCookieHasSameSite(?string $sameSite): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cookie_samesite' => $sameSite,
@@ -574,7 +574,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testCookiesSetWithDefaultLifetime()
+    public function testCookiesSetWithDefaultLifetime(): void
     {
         $persistence = new PhpSessionPersistence();
         $request     = new ServerRequest();
@@ -591,7 +591,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame(0, $setCookie->getExpires());
     }
 
-    public function testCookiesSetWithCustomLifetime()
+    public function testCookiesSetWithCustomLifetime(): void
     {
         $lifetime = 300;
 
@@ -620,7 +620,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testAllowsSessionToSpecifyLifetime()
+    public function testAllowsSessionToSpecifyLifetime(): void
     {
         $originalLifetime = ini_get('session.cookie_lifetime');
 
@@ -647,7 +647,7 @@ class PhpSessionPersistenceTest extends TestCase
         session_set_cookie_params($originalLifetime);
     }
 
-    public function testAllowsSessionToOverrideDefaultLifetime()
+    public function testAllowsSessionToOverrideDefaultLifetime(): void
     {
         $ini = $this->applyCustomSessionOptions([
             'cookie_lifetime' => 600,
@@ -675,7 +675,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testSavedSessionLifetimeOverridesDefaultLifetime()
+    public function testSavedSessionLifetimeOverridesDefaultLifetime(): void
     {
         $ini      = $this->applyCustomSessionOptions([
             'cookie_lifetime' => 600,
@@ -704,7 +704,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testStartSessionDoesNotOverrideRequiredSettings()
+    public function testStartSessionDoesNotOverrideRequiredSettings(): void
     {
         $persistence = new PhpSessionPersistence();
 
@@ -733,7 +733,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame('', $sessionCacheLimiter);
     }
 
-    public function testNoMultipleEmptySessionFilesAreCreatedIfNoSessionCookiePresent()
+    public function testNoMultipleEmptySessionFilesAreCreatedIfNoSessionCookiePresent(): void
     {
         $sessionName = 'NOSESSIONCOOKIESESSID';
         $ini         = $this->applyCustomSessionOptions([
@@ -768,7 +768,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function testOnlyOneSessionFileIsCreatedIfNoSessionCookiePresentInFirstRequestButSessionDataChanged()
+    public function testOnlyOneSessionFileIsCreatedIfNoSessionCookiePresentInFirstRequestButSessionDataChanged(): void
     {
         $sessionName = 'NOSESSIONCOOKIESESSID';
         $ini         = $this->applyCustomSessionOptions([
@@ -814,7 +814,7 @@ class PhpSessionPersistenceTest extends TestCase
         $httpOnlyIni,
         bool $expectedSecure,
         bool $expectedHttpOnly
-    ) {
+    ): void {
         $ini = $this->applyCustomSessionOptions([
             'name'            => 'SETCOOKIESESSIONID',
             'cookie_secure'   => $secureIni,
@@ -837,7 +837,10 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    public function cookieSettingsProvider()
+    /**
+     * @psalm-return array<string, array{0: bool|int|string, 1: bool|int|string, 2: bool, 3: bool}>
+     */
+    public function cookieSettingsProvider(): array
     {
         // @codingStandardsIgnoreStart
         // phpcs:disable
@@ -863,7 +866,7 @@ class PhpSessionPersistenceTest extends TestCase
         // @codingStandardsIgnoreEnd
     }
 
-    public function testHeadersAreNotSentIfReloadedSessionDidNotChange()
+    public function testHeadersAreNotSentIfReloadedSessionDidNotChange(): void
     {
         $this->assertSame(PHP_SESSION_NONE, session_status());
 
@@ -882,7 +885,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertEmpty($response->getHeaders());
     }
 
-    public function testNonLockingSessionIsClosedAfterInitialize()
+    public function testNonLockingSessionIsClosedAfterInitialize(): void
     {
         $persistence = new PhpSessionPersistence(true);
 
@@ -892,7 +895,7 @@ class PhpSessionPersistenceTest extends TestCase
         $response = $persistence->persistSession($session, new Response());
     }
 
-    public function testSessionIsOpenAfterInitializeWithFalseNonLockingSetting()
+    public function testSessionIsOpenAfterInitializeWithFalseNonLockingSetting(): void
     {
         $persistence = new PhpSessionPersistence(false);
 
@@ -902,7 +905,7 @@ class PhpSessionPersistenceTest extends TestCase
         $response = $persistence->persistSession($session, new Response());
     }
 
-    public function testNonLockingSessionDataIsPersisted()
+    public function testNonLockingSessionDataIsPersisted(): void
     {
         $sid = 'non-locking-session-id';
 
@@ -926,7 +929,7 @@ class PhpSessionPersistenceTest extends TestCase
         session_write_close();
     }
 
-    public function testNonLockingRegeneratedSessionIsPersisted()
+    public function testNonLockingRegeneratedSessionIsPersisted(): void
     {
         $sid = 'non-locking-session-id';
 
@@ -955,7 +958,7 @@ class PhpSessionPersistenceTest extends TestCase
         session_write_close();
     }
 
-    public function testInitializeIdReturnsSessionWithId()
+    public function testInitializeIdReturnsSessionWithId(): void
     {
         $persistence = new PhpSessionPersistence();
         $session     = new Session(['foo' => 'bar']);
@@ -967,7 +970,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $actual->toArray());
     }
 
-    public function testInitializeIdRegeneratesSessionId()
+    public function testInitializeIdRegeneratesSessionId(): void
     {
         $persistence = new PhpSessionPersistence();
         $session     = new Session(['foo' => 'bar'], 'original-id');
@@ -979,7 +982,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertFalse($actual->isRegenerated());
     }
 
-    public function testRegenerateWhenSessionAlreadyActiveDestroyExistingSessionFirst()
+    public function testRegenerateWhenSessionAlreadyActiveDestroyExistingSessionFirst(): void
     {
         session_start();
 
@@ -996,7 +999,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertFileDoesNotExist($fileSession);
     }
 
-    public function testCookieIsDeletedFromBrowserIfSessionBecomesEmpty()
+    public function testCookieIsDeletedFromBrowserIfSessionBecomesEmpty(): void
     {
         $persistence = new PhpSessionPersistence(false, true);
         $session     = new Session(['foo' => 'bar']);
@@ -1008,7 +1011,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertStringContainsString($expected, $cookie, 'cookie should bet set to expire in the past');
     }
 
-    public function testInitializeIdReturnsSessionUnaltered()
+    public function testInitializeIdReturnsSessionUnaltered(): void
     {
         $persistence = new PhpSessionPersistence();
         $session     = new Session(['foo' => 'bar'], 'original-id');
