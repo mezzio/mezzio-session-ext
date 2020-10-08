@@ -72,7 +72,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      */
     public function __construct(bool $nonLocking = false, bool $deleteCookieOnEmptySession = false)
     {
-        $this->nonLocking = $nonLocking;
+        $this->nonLocking                 = $nonLocking;
         $this->deleteCookieOnEmptySession = $deleteCookieOnEmptySession;
 
         // Get session cache ini settings
@@ -99,14 +99,15 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
     /**
      * @internal
+     *
      * @return bool the non-locking mode used during initialization
      */
-    public function isNonLocking() : bool
+    public function isNonLocking(): bool
     {
         return $this->nonLocking;
     }
 
-    public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface
+    public function initializeSessionFromRequest(ServerRequestInterface $request): SessionInterface
     {
         $sessionId = $this->getSessionCookieValueFromRequest($request);
         if ($sessionId) {
@@ -117,14 +118,15 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         return new Session($_SESSION ?? [], $sessionId);
     }
 
-    public function persistSession(SessionInterface $session, ResponseInterface $response) : ResponseInterface
+    public function persistSession(SessionInterface $session, ResponseInterface $response): ResponseInterface
     {
         $id = $session->getId();
 
         // Regenerate if:
         // - the session is marked as regenerated
         // - the id is empty, but the data has changed (new session)
-        if ($session->isRegenerated()
+        if (
+            $session->isRegenerated()
             || ($id === '' && $session->hasChanged())
         ) {
             $id = $this->regenerateSession();
@@ -156,7 +158,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         return $response;
     }
 
-    public function initializeId(SessionInterface $session) : SessionInterface
+    public function initializeId(SessionInterface $session): SessionInterface
     {
         $id = $session->getId();
         if ($id === '' || $session->isRegenerated()) {
@@ -171,7 +173,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     /**
      * @param array $options Additional options to pass to `session_start()`.
      */
-    private function startSession(string $id, array $options = []) : void
+    private function startSession(string $id, array $options = []): void
     {
         session_id($id);
         session_start([
@@ -184,7 +186,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     /**
      * Regenerates the session safely.
      */
-    private function regenerateSession() : string
+    private function regenerateSession(): string
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_destroy();
@@ -200,7 +202,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     /**
      * Generate a session identifier.
      */
-    private function generateSessionId() : string
+    private function generateSessionId(): string
     {
         return bin2hex(random_bytes(16));
     }

@@ -66,7 +66,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
         array $config,
         bool $expected,
         string $methodToTest
-    ) : void {
+    ): void {
         $container = $this->createMock(ContainerInterface::class);
         $factory   = new PhpSessionPersistenceFactory();
 

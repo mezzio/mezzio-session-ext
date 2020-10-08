@@ -32,7 +32,7 @@ use Psr\Container\ContainerInterface;
  */
 class PhpSessionPersistenceFactory
 {
-    public function __invoke(ContainerInterface $container) : PhpSessionPersistence
+    public function __invoke(ContainerInterface $container): PhpSessionPersistence
     {
         $config = $container->has('config') ? $container->get('config') : null;
         $config = $config['session']['persistence']['ext'] ?? null;
