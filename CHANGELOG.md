@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#17](https://github.com/mezzio/mezzio-session-ext/pull/17) adds support for PHP 8.
 
 ### Changed
 
