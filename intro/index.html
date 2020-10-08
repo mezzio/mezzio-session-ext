@@ -174,7 +174,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -255,7 +255,6 @@
 <h2 id="installation">Installation:</h2>
 <p>Run the following to install this library:</p>
 <pre class="highlight"><code class="language-bash">$ composer require mezzio/mezzio-session-ext</code></pre>
-
 <h2 id="configuration">Configuration</h2>
 <p>If your application uses the <a href="https://docs.laminas.dev/laminas-component-installer">laminas-component-installer</a>
 Composer plugin, your configuration is complete; the shipped
@@ -284,7 +283,6 @@ return [
         ],
     ],
 ];</code></pre>
-
 <p>As for the PHP extension, we can use safely use this option only when we are sure
 that the session data won't be changed or when only one of the concurrent scripts
 may change it. The last script that changes and persists the session data will
@@ -304,7 +302,6 @@ return [
         ],
     ],
 ];</code></pre>
-
 <p>Then whenever you call <code>$session-&gt;clear()</code>, the cookie will be deleted in
 the browser, in addition to the session being deleted on the server.</p>
 <h2 id="usage">Usage</h2>
