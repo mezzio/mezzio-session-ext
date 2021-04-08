@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.11.0 - TBD
+## 1.11.0 - 2021-04-08
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [1.11.0](https://github.com/mezzio/mezzio-session-ext/milestone/6)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 1.11.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [20: Move &quot;dflydev/fig-cookies&quot; package to require-dev](https://github.com/mezzio/mezzio-session-ext/pull/20) thanks to @rieschl
 
 ## 1.10.0 - 2020-10-08
 
