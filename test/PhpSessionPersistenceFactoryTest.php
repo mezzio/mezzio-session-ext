@@ -28,7 +28,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
             ->method('has')
             ->with('config')
             ->willReturn(false);
-        
+
         $persistence = $factory($container);
         $this->assertInstanceOf(PhpSessionPersistence::class, $persistence);
         $this->assertFalse($persistence->isNonLocking());
