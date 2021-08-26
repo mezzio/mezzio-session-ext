@@ -28,7 +28,7 @@
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0",
+        "php": "^7.3 || ~8.0.0 || ~8.1.0",
         "ext-session": "*",
         "laminas/laminas-zendframework-bridge": "^1.0",
         "mezzio/mezzio-session": "^1.4"
