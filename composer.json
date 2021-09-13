@@ -30,7 +30,6 @@
     "require": {
         "php": "^7.3 || ~8.0.0 || ~8.1.0",
         "ext-session": "*",
-        "laminas/laminas-zendframework-bridge": "^1.0",
         "mezzio/mezzio-session": "^1.4"
     },
     "require-dev": {
@@ -62,7 +61,7 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-expressive-session-ext": "^1.7.0"
+    "conflict": {
+        "zendframework/zend-expressive-session-ext": "*"
     }
 }
