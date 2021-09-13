@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.16@d03e5ef057d6adc656c0ff7e166c50b73b4f48f3">
+<files psalm-version="4.10.0@916b098b008f6de4543892b1e0651c1c3b92cbfa">
   <file src="src/PhpSessionPersistence.php">
     <MixedArgument occurrences="3">
       <code>$id</code>
@@ -21,10 +21,16 @@
     </UndefinedInterfaceMethod>
   </file>
   <file src="src/PhpSessionPersistenceFactory.php">
+    <MixedArrayAccess occurrences="1">
+      <code>$config['session']</code>
+    </MixedArrayAccess>
     <MixedAssignment occurrences="2">
       <code>$config</code>
       <code>$config</code>
     </MixedAssignment>
+    <PossiblyNullArrayAccess occurrences="1">
+      <code>$config['session']</code>
+    </PossiblyNullArrayAccess>
   </file>
   <file src="test/ConfigProviderTest.php">
     <RedundantCondition occurrences="1">
@@ -39,9 +45,6 @@
     <MixedInferredReturnType occurrences="1">
       <code>iterable</code>
     </MixedInferredReturnType>
-    <RedundantCondition occurrences="1">
-      <code>assertInstanceOf</code>
-    </RedundantCondition>
   </file>
   <file src="test/PhpSessionPersistenceTest.php">
     <ArgumentTypeCoercion occurrences="2">
@@ -88,16 +91,6 @@
     <PossiblyNullArgument occurrences="1">
       <code>$regeneratedId</code>
     </PossiblyNullArgument>
-    <RedundantCondition occurrences="8">
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-    </RedundantCondition>
     <TypeDoesNotContainType occurrences="2">
       <code>assertSame</code>
       <code>assertSame</code>

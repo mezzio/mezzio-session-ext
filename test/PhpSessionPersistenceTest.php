@@ -886,7 +886,7 @@ class PhpSessionPersistenceTest extends TestCase
         $request = $this->createSessionCookieRequest('non-locking-session-id');
         $session = $persistence->initializeSessionFromRequest($request);
         $this->assertSame(PHP_SESSION_NONE, session_status());
-        $response = $persistence->persistSession($session, new Response());
+        $persistence->persistSession($session, new Response());
     }
 
     public function testSessionIsOpenAfterInitializeWithFalseNonLockingSetting(): void
@@ -896,7 +896,7 @@ class PhpSessionPersistenceTest extends TestCase
         $request = $this->createSessionCookieRequest('locking-session-id');
         $session = $persistence->initializeSessionFromRequest($request);
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
-        $response = $persistence->persistSession($session, new Response());
+        $persistence->persistSession($session, new Response());
     }
 
     public function testNonLockingSessionDataIsPersisted(): void
@@ -911,7 +911,7 @@ class PhpSessionPersistenceTest extends TestCase
         $request = $this->createSessionCookieRequest($sid);
         $session = $persistence->initializeSessionFromRequest($request);
         $session->set($name, $value);
-        $response = $persistence->persistSession($session, new Response());
+        $persistence->persistSession($session, new Response());
 
         $_SESSION = null;
 
