@@ -28,9 +28,8 @@
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0",
+        "php": "^7.3 || ~8.0.0 || ~8.1.0",
         "ext-session": "*",
-        "laminas/laminas-zendframework-bridge": "^1.0",
         "mezzio/mezzio-session": "^1.4"
     },
     "require-dev": {
@@ -38,8 +37,8 @@
         "laminas/laminas-coding-standard": "~2.2.0",
         "laminas/laminas-diactoros": "^2.5.0",
         "phpunit/phpunit": "^9.3",
-        "psalm/plugin-phpunit": "^0.12.2",
-        "vimeo/psalm": "^3.16"
+        "psalm/plugin-phpunit": "^0.16.1",
+        "vimeo/psalm": "^4.10"
     },
     "autoload": {
         "psr-4": {
@@ -62,7 +61,7 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-expressive-session-ext": "^1.7.0"
+    "conflict": {
+        "zendframework/zend-expressive-session-ext": "*"
     }
 }
