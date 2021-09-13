@@ -3,7 +3,7 @@
 This component provides a persistence adapter for use with
 [mezzio-session](https://docs.mezzio.dev/mezzio-session/).
 
-## Installation:
+## Installation
 
 Run the following to install this library:
 
