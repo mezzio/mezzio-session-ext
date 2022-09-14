@@ -22,8 +22,8 @@ class ConfigProvider
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
 
                 // Legacy Zend Framework aliases
-                'use Zend\Expressive\Session\SessionPersistenceInterface' => SessionPersistenceInterface::class,
-                'Zend\Expressive\Session\Ext\PhpSessionPersistence'       => PhpSessionPersistence::class,
+                'Zend\Expressive\Session\SessionPersistenceInterface' => SessionPersistenceInterface::class,
+                'Zend\Expressive\Session\Ext\PhpSessionPersistence'   => PhpSessionPersistence::class,
             ],
             'factories' => [
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
