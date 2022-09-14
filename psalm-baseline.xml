@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.10.0@916b098b008f6de4543892b1e0651c1c3b92cbfa">
+<files psalm-version="4.27.0@faf106e717c37b8c81721845dba9de3d8deed8ff">
   <file src="src/PhpSessionPersistence.php">
-    <MixedArgument occurrences="3">
-      <code>$id</code>
-      <code>$id</code>
+    <MixedArgument occurrences="1">
       <code>$session-&gt;getId()</code>
     </MixedArgument>
-    <MixedAssignment occurrences="2">
-      <code>$id</code>
+    <MixedArgumentTypeCoercion occurrences="2">
+      <code>$_SESSION ?? []</code>
+      <code>$session-&gt;toArray()</code>
+    </MixedArgumentTypeCoercion>
+    <MixedAssignment occurrences="1">
       <code>$id</code>
     </MixedAssignment>
     <PossiblyNullPropertyAssignmentValue occurrences="2"/>
-    <PropertyNotSetInConstructor occurrences="1">
-      <code>PhpSessionPersistence</code>
-    </PropertyNotSetInConstructor>
-    <UndefinedInterfaceMethod occurrences="3">
-      <code>getId</code>
+    <UndefinedInterfaceMethod occurrences="2">
       <code>getId</code>
       <code>getId</code>
     </UndefinedInterfaceMethod>
@@ -80,19 +77,16 @@
     <MoreSpecificReturnType occurrences="1">
       <code>ServerRequestInterface</code>
     </MoreSpecificReturnType>
-    <NullArgument occurrences="2">
-      <code>$_SESSION</code>
+    <NullArgument occurrences="1">
       <code>$_SESSION</code>
     </NullArgument>
-    <NullArrayAccess occurrences="2">
-      <code>$_SESSION[$name]</code>
+    <NullArrayAccess occurrences="1">
       <code>$_SESSION[$name]</code>
     </NullArrayAccess>
     <PossiblyNullArgument occurrences="1">
       <code>$regeneratedId</code>
     </PossiblyNullArgument>
-    <TypeDoesNotContainType occurrences="2">
-      <code>assertSame</code>
+    <TypeDoesNotContainType occurrences="1">
       <code>assertSame</code>
     </TypeDoesNotContainType>
     <UndefinedInterfaceMethod occurrences="6">

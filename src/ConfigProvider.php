@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Mezzio\Session\Ext;
 
 use Mezzio\Session\SessionPersistenceInterface;
-use Zend\Expressive\Session\Ext\PhpSessionPersistence as LegacyPhpSessionPersistence;
-use Zend\Expressive\Session\SessionPersistenceInterface as LegacySessionPersistenceInterface;
 
 class ConfigProvider
 {
@@ -24,8 +22,8 @@ class ConfigProvider
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
 
                 // Legacy Zend Framework aliases
-                LegacySessionPersistenceInterface::class => SessionPersistenceInterface::class,
-                LegacyPhpSessionPersistence::class       => PhpSessionPersistence::class,
+                'Zend\Expressive\Session\SessionPersistenceInterface' => SessionPersistenceInterface::class,
+                'Zend\Expressive\Session\Ext\PhpSessionPersistence'   => PhpSessionPersistence::class,
             ],
             'factories' => [
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
