@@ -20,10 +20,13 @@
         "forum": "https://discourse.laminas.dev"
     },
     "config": {
-        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
         "platform": {
             "php": "7.3.99"
-        }
+        },
+        "sort-packages": true
     },
     "extra": {
         "laminas": {
