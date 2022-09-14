@@ -982,7 +982,7 @@ class PhpSessionPersistenceTest extends TestCase
         // reopens the session file and check the contents
         session_id($regeneratedId);
         session_start();
-        //phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.NoAssignment
+        //phpcs:ignore SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration.MissingVariable
         /**
          * Psalm doesn't know what $_SESSION is at this point
          *
