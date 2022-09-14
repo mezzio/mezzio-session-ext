@@ -4,13 +4,15 @@
     <MixedArgument occurrences="1">
       <code>$session-&gt;getId()</code>
     </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="2">
+      <code>$_SESSION ?? []</code>
+      <code>$session-&gt;toArray()</code>
+    </MixedArgumentTypeCoercion>
     <MixedAssignment occurrences="1">
-      <code>$id</code>
       <code>$id</code>
     </MixedAssignment>
     <PossiblyNullPropertyAssignmentValue occurrences="2"/>
     <UndefinedInterfaceMethod occurrences="2">
-      <code>getId</code>
       <code>getId</code>
       <code>getId</code>
     </UndefinedInterfaceMethod>
@@ -77,17 +79,14 @@
     </MoreSpecificReturnType>
     <NullArgument occurrences="1">
       <code>$_SESSION</code>
-      <code>$_SESSION</code>
     </NullArgument>
     <NullArrayAccess occurrences="1">
-      <code>$_SESSION[$name]</code>
       <code>$_SESSION[$name]</code>
     </NullArrayAccess>
     <PossiblyNullArgument occurrences="1">
       <code>$regeneratedId</code>
     </PossiblyNullArgument>
     <TypeDoesNotContainType occurrences="1">
-      <code>assertSame</code>
       <code>assertSame</code>
     </TypeDoesNotContainType>
     <UndefinedInterfaceMethod occurrences="6">
