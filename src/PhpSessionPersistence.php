@@ -47,10 +47,8 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
 
     /**
      * Use non locking mode during session initialization?
-     *
-     * @var bool
      */
-    private $nonLocking;
+    private bool $nonLocking;
 
     /**
      * Memorize session ini settings before starting the request.

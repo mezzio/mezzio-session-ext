@@ -59,16 +59,12 @@ class PhpSessionPersistenceTest extends TestCase
      * Generic persistance instance to be used when custom ini-settings are not
      * applied. In that case instantiate a fresh instance after applying custom
      * ini-settings.
-     *
-     * @var PhpSessionPersistence
      */
-    private $persistence;
+    private PhpSessionPersistence $persistence;
 
-    /** @var array */
-    private $originalSessionSettings;
+    private array $originalSessionSettings;
 
-    /** @var string */
-    private $sessionSavePath;
+    private string $sessionSavePath;
 
     protected function setUp(): void
     {
