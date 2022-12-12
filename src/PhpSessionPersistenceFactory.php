@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Mezzio\Session\Ext;
 
+use ArrayAccess;
 use Psr\Container\ContainerInterface;
+
+use function assert;
+use function is_array;
 
 /**
  * Create and return an instance of PhpSessionPersistence.
@@ -17,23 +21,30 @@ use Psr\Container\ContainerInterface;
  * 'session' => [
  *     'persistence' => [
  *         'ext' => [
- *             'non_locking' => true, // true|false
+ *             'non_locking' => true, // bool
+ *             'delete_cookie_on_empty_session' => false, // bool
  *         ],
  *     ],
  * ],
  * //...
  * <code>
+ *
+ * @final
  */
 class PhpSessionPersistenceFactory
 {
     public function __invoke(ContainerInterface $container): PhpSessionPersistence
     {
-        $config = $container->has('config') ? $container->get('config') : null;
-        $config = $config['session']['persistence']['ext'] ?? null;
+        $config = $container->has('config') ? $container->get('config') : [];
+        assert(is_array($config) || $config instanceof ArrayAccess);
+        $session     = isset($config['session']) && is_array($config['session']) ? $config['session'] : [];
+        $persistence = isset($session['persistence']) && is_array($session['persistence'])
+            ? $session['persistence'] : [];
+        $options     = isset($persistence['ext']) && is_array($persistence['ext']) ? $persistence['ext'] : [];
 
         return new PhpSessionPersistence(
-            ! empty($config['non_locking']),
-            ! empty($config['delete_cookie_on_empty_session'])
+            ! empty($options['non_locking']),
+            ! empty($options['delete_cookie_on_empty_session'])
         );
     }
 }
