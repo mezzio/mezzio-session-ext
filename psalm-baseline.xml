@@ -1,82 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.1.0@4defa177c89397c5e14737a80fe4896584130674">
+<files psalm-version="5.8.0@9cf4f60a333f779ad3bc704a555920e81d4fdcda">
   <file src="src/PhpSessionPersistence.php">
-    <MixedArgument occurrences="1">
-      <code>$session-&gt;getId()</code>
+    <MixedArgument>
+      <code><![CDATA[$session->getId()]]></code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$session-&gt;toArray()</code>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$session->toArray()]]></code>
     </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$id</code>
     </MixedAssignment>
-    <PossiblyNullPropertyAssignmentValue occurrences="2"/>
-    <UndefinedInterfaceMethod occurrences="2">
+    <PossiblyNullPropertyAssignmentValue/>
+    <UndefinedInterfaceMethod>
       <code>getId</code>
       <code>getId</code>
     </UndefinedInterfaceMethod>
   </file>
   <file src="test/ConfigProviderTest.php">
-    <RedundantCondition occurrences="1">
+    <RedundantCondition>
       <code>assertIsArray</code>
     </RedundantCondition>
   </file>
   <file src="test/PhpSessionPersistenceFactoryTest.php">
-    <InternalMethod occurrences="2">
+    <InternalMethod>
       <code>isDeleteCookieOnEmptySession</code>
       <code>isNonLocking</code>
     </InternalMethod>
-    <MixedInferredReturnType occurrences="1">
+    <MixedInferredReturnType>
       <code>iterable</code>
     </MixedInferredReturnType>
   </file>
   <file src="test/PhpSessionPersistenceTest.php">
-    <ArgumentTypeCoercion occurrences="2">
+    <ArgumentTypeCoercion>
       <code>$request</code>
       <code>$request</code>
     </ArgumentTypeCoercion>
-    <InvalidArgument occurrences="1">
+    <InvalidArgument>
       <code>$originalLifetime</code>
     </InvalidArgument>
-    <LessSpecificReturnStatement occurrences="1"/>
-    <MixedArgument occurrences="3">
-      <code>$setCookie-&gt;getValue()</code>
-      <code>$setCookie-&gt;getValue()</code>
+    <LessSpecificReturnStatement/>
+    <MixedArgument>
+      <code><![CDATA[$setCookie->getValue()]]></code>
+      <code><![CDATA[$setCookie->getValue()]]></code>
       <code>$value</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
+    <MixedArgumentTypeCoercion>
       <code>$key</code>
     </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="3">
+    <MixedAssignment>
       <code>$setCookie</code>
       <code>$value</code>
       <code>$value</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
+    <MixedInferredReturnType>
       <code>array</code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="4">
+    <MixedMethodCall>
       <code>getHttpOnly</code>
       <code>getSecure</code>
       <code>getValue</code>
       <code>getValue</code>
     </MixedMethodCall>
-    <MoreSpecificReturnType occurrences="1">
+    <MoreSpecificReturnType>
       <code>ServerRequestInterface</code>
     </MoreSpecificReturnType>
-    <NullArgument occurrences="1">
+    <NullArgument>
       <code>$_SESSION</code>
     </NullArgument>
-    <NullArrayAccess occurrences="1">
+    <NullArrayAccess>
       <code>$_SESSION[$name]</code>
     </NullArrayAccess>
-    <PossiblyNullArgument occurrences="1">
-      <code>$regeneratedId</code>
-    </PossiblyNullArgument>
-    <TypeDoesNotContainType occurrences="1">
+    <TypeDoesNotContainType>
       <code>assertSame</code>
     </TypeDoesNotContainType>
-    <UndefinedInterfaceMethod occurrences="6">
+    <UndefinedInterfaceMethod>
       <code>getId</code>
       <code>getId</code>
       <code>getId</code>
