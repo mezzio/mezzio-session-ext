@@ -10,7 +10,18 @@
     <MixedAssignment>
       <code>$id</code>
     </MixedAssignment>
-    <PossiblyNullPropertyAssignmentValue/>
+    <PossiblyNullPropertyAssignmentValue>
+      <code><![CDATA[filter_var(
+            ini_get('session.cookie_httponly'),
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE
+        )]]></code>
+      <code><![CDATA[filter_var(
+            ini_get('session.cookie_secure'),
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE
+        )]]></code>
+    </PossiblyNullPropertyAssignmentValue>
     <UndefinedInterfaceMethod>
       <code>getId</code>
       <code>getId</code>
@@ -26,9 +37,9 @@
       <code>isDeleteCookieOnEmptySession</code>
       <code>isNonLocking</code>
     </InternalMethod>
-    <MixedInferredReturnType>
-      <code>iterable</code>
-    </MixedInferredReturnType>
+    <PossiblyUnusedMethod>
+      <code>configProvider</code>
+    </PossiblyUnusedMethod>
   </file>
   <file src="test/PhpSessionPersistenceTest.php">
     <ArgumentTypeCoercion>
@@ -38,7 +49,6 @@
     <InvalidArgument>
       <code>$originalLifetime</code>
     </InvalidArgument>
-    <LessSpecificReturnStatement/>
     <MixedArgument>
       <code><![CDATA[$setCookie->getValue()]]></code>
       <code><![CDATA[$setCookie->getValue()]]></code>
@@ -52,24 +62,22 @@
       <code>$value</code>
       <code>$value</code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code>array</code>
-    </MixedInferredReturnType>
     <MixedMethodCall>
       <code>getHttpOnly</code>
       <code>getSecure</code>
       <code>getValue</code>
       <code>getValue</code>
     </MixedMethodCall>
-    <MoreSpecificReturnType>
-      <code>ServerRequestInterface</code>
-    </MoreSpecificReturnType>
     <NullArgument>
       <code>$_SESSION</code>
     </NullArgument>
     <NullArrayAccess>
       <code>$_SESSION[$name]</code>
     </NullArrayAccess>
+    <PossiblyUnusedMethod>
+      <code>cookieSettingsProvider</code>
+      <code>sameSitePossibleValues</code>
+    </PossiblyUnusedMethod>
     <TypeDoesNotContainType>
       <code>assertSame</code>
     </TypeDoesNotContainType>
