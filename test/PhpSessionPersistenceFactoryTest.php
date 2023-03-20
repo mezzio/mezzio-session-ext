@@ -6,6 +6,7 @@ namespace MezzioTest\Session\Ext;
 
 use Mezzio\Session\Ext\PhpSessionPersistence;
 use Mezzio\Session\Ext\PhpSessionPersistenceFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -29,7 +30,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
         $this->assertFalse($persistence->isDeleteCookieOnEmptySession());
     }
 
-    public function configProvider(): iterable
+    public static function configProvider(): iterable
     {
         yield 'non_locking disabled' => [
             'config'       => ['non_locking' => false],
@@ -53,9 +54,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider configProvider
-     */
+    #[DataProvider('configProvider')]
     public function testFactoryConfigProducesPhpSessionPersistenceInterfaceService(
         array $config,
         bool $expected,

@@ -17,6 +17,8 @@ use Mezzio\Session\Persistence\Http;
 use Mezzio\Session\Session;
 use Mezzio\Session\SessionCookiePersistenceInterface;
 use Mezzio\Session\SessionIdentifierAwareInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
@@ -50,9 +52,7 @@ use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_SESSION_ACTIVE;
 use const PHP_SESSION_NONE;
 
-/**
- * @runTestsInSeparateProcesses
- */
+#[RunTestsInSeparateProcesses]
 class PhpSessionPersistenceTest extends TestCase
 {
     /**
@@ -106,18 +106,23 @@ class PhpSessionPersistenceTest extends TestCase
         ] + $options);
     }
 
+    /** @param array<string, mixed> $serverParams */
     private function createSessionCookieRequest(
         ?string $sessionId = null,
         ?string $sessionName = null,
         array $serverParams = []
     ): ServerRequestInterface {
-        return FigRequestCookies::set(
+        $request = FigRequestCookies::set(
             new ServerRequest($serverParams),
             Cookie::create(
                 $sessionName ?: session_name(),
                 $sessionId ?: 'testing'
             )
         );
+
+        self::assertInstanceOf(ServerRequestInterface::class, $request);
+
+        return $request;
     }
 
     /**
@@ -542,7 +547,7 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertNotEmpty($response->getHeaderLine('Set-Cookie'));
     }
 
-    public function sameSitePossibleValues(): array
+    public static function sameSitePossibleValues(): array
     {
         return [
             ['Strict'],
@@ -553,9 +558,7 @@ class PhpSessionPersistenceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider sameSitePossibleValues
-     */
+    #[DataProvider('sameSitePossibleValues')]
     public function testCookieHasSameSite(?string $sameSite): void
     {
         $ini = $this->applyCustomSessionOptions([
@@ -722,7 +725,6 @@ class PhpSessionPersistenceTest extends TestCase
         $persistence = new PhpSessionPersistence();
 
         $method = new ReflectionMethod($persistence, 'startSession');
-        $method->setAccessible(true);
 
         // try to override required settings
         $method->invokeArgs($persistence, [
@@ -821,14 +823,10 @@ class PhpSessionPersistenceTest extends TestCase
         $this->restoreOriginalSessionIniSettings($ini);
     }
 
-    /**
-     * @dataProvider cookieSettingsProvider
-     * @param string|int|bool $secureIni
-     * @param string|int|bool $httpOnlyIni
-     */
+    #[DataProvider('cookieSettingsProvider')]
     public function testThatSetCookieCorrectlyInterpretsIniSettings(
-        $secureIni,
-        $httpOnlyIni,
+        string|int|bool $secureIni,
+        string|int|bool $httpOnlyIni,
         bool $expectedSecure,
         bool $expectedHttpOnly
     ): void {
@@ -841,7 +839,6 @@ class PhpSessionPersistenceTest extends TestCase
         $persistence = new PhpSessionPersistence();
 
         $createSessionCookieForResponse = new ReflectionMethod($persistence, 'createSessionCookieForResponse');
-        $createSessionCookieForResponse->setAccessible(true);
 
         $setCookie = $createSessionCookieForResponse->invokeArgs(
             $persistence,
@@ -857,7 +854,7 @@ class PhpSessionPersistenceTest extends TestCase
     /**
      * @psalm-return array<string, array{0: bool|int|string, 1: bool|int|string, 2: bool, 3: bool}>
      */
-    public function cookieSettingsProvider(): array
+    public static function cookieSettingsProvider(): array
     {
         // @codingStandardsIgnoreStart
         // phpcs:disable
