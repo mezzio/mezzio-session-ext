@@ -722,7 +722,6 @@ class PhpSessionPersistenceTest extends TestCase
         $persistence = new PhpSessionPersistence();
 
         $method = new ReflectionMethod($persistence, 'startSession');
-        $method->setAccessible(true);
 
         // try to override required settings
         $method->invokeArgs($persistence, [
@@ -823,12 +822,10 @@ class PhpSessionPersistenceTest extends TestCase
 
     /**
      * @dataProvider cookieSettingsProvider
-     * @param string|int|bool $secureIni
-     * @param string|int|bool $httpOnlyIni
      */
     public function testThatSetCookieCorrectlyInterpretsIniSettings(
-        $secureIni,
-        $httpOnlyIni,
+        string|int|bool $secureIni,
+        string|int|bool $httpOnlyIni,
         bool $expectedSecure,
         bool $expectedHttpOnly
     ): void {
@@ -841,7 +838,6 @@ class PhpSessionPersistenceTest extends TestCase
         $persistence = new PhpSessionPersistence();
 
         $createSessionCookieForResponse = new ReflectionMethod($persistence, 'createSessionCookieForResponse');
-        $createSessionCookieForResponse->setAccessible(true);
 
         $setCookie = $createSessionCookieForResponse->invokeArgs(
             $persistence,
