@@ -45,8 +45,9 @@ class PhpSessionPersistenceFactory
     {
         $config = $container->has('config') ? $container->get('config') : [];
         assert(is_array($config) || $config instanceof ArrayAccess);
-        $session = isset($config['session']) && is_array($config['session']) ? $config['session'] : [];
 
-        return new PhpSessionPersistence($session);
+        return new PhpSessionPersistence(
+            isset($config['session']) && is_array($config['session']) ? $config['session'] : []
+        );
     }
 }
