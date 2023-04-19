@@ -16,6 +16,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use function bin2hex;
 use function filter_var;
 use function ini_get;
+use function is_array;
+use function is_bool;
+use function is_int;
+use function is_string;
 use function random_bytes;
 use function session_destroy;
 use function session_id;
@@ -59,34 +63,55 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      * Those headers will be added programmatically to the response along with
      * the session set-cookie header when the session data is persisted.
      *
-     * @param bool $nonLocking use the non locking mode during initialization?
-     * @param bool $deleteCookieOnEmptySession delete cookie from browser when session becomes empty?
+     * @param array $session
      */
-    public function __construct(bool $nonLocking = false, bool $deleteCookieOnEmptySession = false)
+    public function __construct(array $session = [])
     {
-        $this->nonLocking                 = $nonLocking;
-        $this->deleteCookieOnEmptySession = $deleteCookieOnEmptySession;
+        $persistence = isset($session['persistence']) && is_array($session['persistence'])
+            ? $session['persistence'] : [];
+        $ext         = isset($persistence['ext']) && is_array($persistence['ext']) ? $persistence['ext'] : [];
+
+        $this->nonLocking                 = ! empty($ext['non_locking']);
+        $this->deleteCookieOnEmptySession = ! empty($ext['delete_cookie_on_empty_session']);
 
         // Get session cache ini settings
-        $this->cacheLimiter = ini_get('session.cache_limiter');
-        $this->cacheExpire  = (int) ini_get('session.cache_expire');
+        $this->cacheLimiter = isset($session['cache_limiter']) && is_string($session['cache_limiter'])
+            ? $session['cache_limiter']
+            : ini_get('session.cache_limiter');
+        $this->cacheExpire  = isset($session['cache_expire']) && is_int($session['cache_expire'])
+            ? $session['cache_expire']
+            : (int) ini_get('session.cache_expire');
 
         // Get session cookie ini settings
-        $this->cookieName     = ini_get('session.name');
-        $this->cookieLifetime = (int) ini_get('session.cookie_lifetime');
-        $this->cookiePath     = ini_get('session.cookie_path');
-        $this->cookieDomain   = ini_get('session.cookie_domain');
-        $this->cookieSecure   = filter_var(
-            ini_get('session.cookie_secure'),
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        );
-        $this->cookieHttpOnly = filter_var(
-            ini_get('session.cookie_httponly'),
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        );
-        $this->cookieSameSite = ini_get('session.cookie_samesite');
+        $this->cookieName     = isset($session['name']) && is_string($session['name'])
+            ? $session['name']
+            : ini_get('session.name');
+        $this->cookieLifetime = isset($session['cookie_lifetime']) && is_int($session['cookie_lifetime'])
+            ? $session['cookie_lifetime']
+            : (int) ini_get('session.cookie_lifetime');
+        $this->cookiePath     = isset($session['cookie_path']) && is_string($session['cookie_path'])
+            ? $session['cookie_path']
+            : ini_get('session.cookie_path');
+        $this->cookieDomain   = isset($session['cookie_domain']) && is_string($session['cookie_domain'])
+            ? $session['cookie_domain']
+            : ini_get('session.cookie_domain');
+        $this->cookieSecure   = isset($session['cookie_secure']) && is_bool($session['cookie_secure'])
+            ? $session['cookie_secure']
+            : (bool) filter_var(
+                ini_get('session.cookie_secure'),
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_NULL_ON_FAILURE
+            );
+        $this->cookieHttpOnly = isset($session['cookie_httponly']) && is_bool($session['cookie_httponly'])
+            ? $session['cookie_httponly']
+            : (bool) filter_var(
+                ini_get('session.cookie_httponly'),
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_NULL_ON_FAILURE
+            );
+        $this->cookieSameSite = isset($session['cookie_samesite']) && is_string($session['cookie_samesite'])
+            ? $session['cookie_samesite']
+            : ini_get('session.cookie_samesite');
     }
 
     /**

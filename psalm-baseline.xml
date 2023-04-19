@@ -10,18 +10,6 @@
     <MixedAssignment>
       <code>$id</code>
     </MixedAssignment>
-    <PossiblyNullPropertyAssignmentValue>
-      <code><![CDATA[filter_var(
-            ini_get('session.cookie_httponly'),
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        )]]></code>
-      <code><![CDATA[filter_var(
-            ini_get('session.cookie_secure'),
-            FILTER_VALIDATE_BOOLEAN,
-            FILTER_NULL_ON_FAILURE
-        )]]></code>
-    </PossiblyNullPropertyAssignmentValue>
     <UndefinedInterfaceMethod>
       <code>getId</code>
       <code>getId</code>

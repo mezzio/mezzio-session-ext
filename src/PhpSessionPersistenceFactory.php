@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Mezzio\Session\Ext;
 
 use ArrayAccess;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
+use Psr\Container\NotFoundExceptionInterface;
 use function assert;
 use function is_array;
 
@@ -33,18 +35,18 @@ use function is_array;
  */
 class PhpSessionPersistenceFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return PhpSessionPersistence
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function __invoke(ContainerInterface $container): PhpSessionPersistence
     {
         $config = $container->has('config') ? $container->get('config') : [];
         assert(is_array($config) || $config instanceof ArrayAccess);
-        $session     = isset($config['session']) && is_array($config['session']) ? $config['session'] : [];
-        $persistence = isset($session['persistence']) && is_array($session['persistence'])
-            ? $session['persistence'] : [];
-        $options     = isset($persistence['ext']) && is_array($persistence['ext']) ? $persistence['ext'] : [];
+        $session = isset($config['session']) && is_array($config['session']) ? $config['session'] : [];
 
-        return new PhpSessionPersistence(
-            ! empty($options['non_locking']),
-            ! empty($options['delete_cookie_on_empty_session'])
-        );
+        return new PhpSessionPersistence($session);
     }
 }
