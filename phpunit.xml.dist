@@ -11,11 +11,11 @@
         displayDetailsOnTestsThatTriggerDeprecations="true"
         displayDetailsOnTestsThatTriggerErrors="true"
 >
-    <source>
+    <coverage>
         <include>
             <directory suffix=".php">./src</directory>
         </include>
-    </source>
+    </coverage>
     <testsuites>
         <testsuite name="mezzio-session-ext">
             <directory>./test</directory>
