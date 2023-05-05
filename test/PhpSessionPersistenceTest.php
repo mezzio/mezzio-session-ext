@@ -179,6 +179,7 @@ class PhpSessionPersistenceTest extends TestCase
 
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
         $this->assertInstanceOf(Session::class, $session);
+        $this->assertTrue(isset($_SESSION));
         $this->assertSame($_SESSION, $session->toArray());
         $this->assertSame('use-this-id', session_id());
     }
@@ -889,6 +890,7 @@ class PhpSessionPersistenceTest extends TestCase
 
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
         $this->assertInstanceOf(Session::class, $session);
+        $this->assertTrue(isset($_SESSION));
         $this->assertSame($_SESSION, $session->toArray());
         $this->assertSame('reloaded-session', session_id());
 

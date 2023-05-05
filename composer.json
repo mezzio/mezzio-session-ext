@@ -42,9 +42,9 @@
         "dflydev/fig-cookies": "^3.0",
         "laminas/laminas-coding-standard": "~2.5.0",
         "laminas/laminas-diactoros": "^3.0",
-        "phpunit/phpunit": "^10.1.1",
+        "phpunit/phpunit": "^10.1.2",
         "psalm/plugin-phpunit": "^0.18.4",
-        "vimeo/psalm": "^5.9"
+        "vimeo/psalm": "^5.11"
     },
     "autoload": {
         "psr-4": {
