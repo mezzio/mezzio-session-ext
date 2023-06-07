@@ -908,7 +908,7 @@ class PhpSessionPersistenceTest extends TestCase
                 ],
             ],
         ];
-        $persistence = new PhpSessionPersistence($session);
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest('non-locking-session-id');
         $session = $persistence->initializeSessionFromRequest($request);
@@ -927,7 +927,7 @@ class PhpSessionPersistenceTest extends TestCase
                 ],
             ],
         ];
-        $persistence = new PhpSessionPersistence($session);
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest('locking-session-id');
         $session = $persistence->initializeSessionFromRequest($request);
@@ -951,7 +951,7 @@ class PhpSessionPersistenceTest extends TestCase
                 ],
             ],
         ];
-        $persistence = new PhpSessionPersistence($session);
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest($sid);
         $session = $persistence->initializeSessionFromRequest($request);
@@ -984,7 +984,7 @@ class PhpSessionPersistenceTest extends TestCase
                 ],
             ],
         ];
-        $persistence = new PhpSessionPersistence($session);
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest($sid);
         $session = $persistence->initializeSessionFromRequest($request);
@@ -1067,7 +1067,7 @@ class PhpSessionPersistenceTest extends TestCase
                 ],
             ],
         ];
-        $persistence = new PhpSessionPersistence($session);
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
         $session     = new Session(['foo' => 'bar']);
         $session->clear();
         $response = $persistence->persistSession($session, new Response());
