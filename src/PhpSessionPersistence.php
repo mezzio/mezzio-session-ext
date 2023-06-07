@@ -80,12 +80,12 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         $this->cookieLifetime = (int) ini_get('session.cookie_lifetime');
         $this->cookiePath     = ini_get('session.cookie_path');
         $this->cookieDomain   = ini_get('session.cookie_domain');
-        $this->cookieSecure   = (bool) filter_var(
+        $this->cookieSecure   = filter_var(
             ini_get('session.cookie_secure'),
             FILTER_VALIDATE_BOOLEAN,
             FILTER_NULL_ON_FAILURE
         );
-        $this->cookieHttpOnly = (bool) filter_var(
+        $this->cookieHttpOnly = filter_var(
             ini_get('session.cookie_httponly'),
             FILTER_VALIDATE_BOOLEAN,
             FILTER_NULL_ON_FAILURE
