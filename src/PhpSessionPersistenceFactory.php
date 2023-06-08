@@ -37,8 +37,12 @@ class PhpSessionPersistenceFactory
     {
         $config = $container->has('config') ? $container->get('config') : [];
         assert(is_array($config) || $config instanceof ArrayAccess);
-        $session = isset($config['session']) && is_array($config['session']) ? $config['session'] : [];
 
-        return PhpSessionPersistence::fromConfigArray($session);
+        /**
+         * @psalm-suppress MixedArgumentTypeCoercion
+         */
+        return PhpSessionPersistence::fromConfigArray(
+            isset($config['session']) && is_array($config['session']) ? $config['session'] : []
+        );
     }
 }

@@ -16,10 +16,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use function bin2hex;
 use function filter_var;
 use function ini_get;
-use function is_array;
-use function is_bool;
-use function is_int;
-use function is_string;
 use function random_bytes;
 use function session_destroy;
 use function session_id;
@@ -32,6 +28,24 @@ use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_SESSION_ACTIVE;
 
 /**
+ * @psalm-type SessionConfig = array{
+ *      persistence?: array{
+ *          ext?: array{
+ *              non_locking?: bool,
+ *              delete_cookie_on_empty_session?: bool,
+ *          }
+ *      },
+ *      cache_limiter?: string,
+ *      cache_expire?: int,
+ *      name?: string,
+ *      cookie_lifetime?: int,
+ *      cookie_path?: string,
+ *      cookie_domain?: string,
+ *      cookie_secure?: bool,
+ *      cookie_httponly?: bool,
+ *      cookie_samesite?: string,
+ * }
+ *
  * Session persistence using ext-session.
  *
  * Adapts ext-session to work with PSR-7 by disabling its auto-cookie creation
@@ -94,14 +108,13 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     }
 
     /**
-     * @param array $session
-     * @return self
+     * @internal
+     *
+     * @param SessionConfig $sessionConfig
      */
-    public static function fromConfigArray(array $session = [])
+    final public static function fromConfigArray(array $sessionConfig = []): self
     {
-        $persistence = isset($session['persistence']) && is_array($session['persistence'])
-            ? $session['persistence'] : [];
-        $ext         = isset($persistence['ext']) && is_array($persistence['ext']) ? $persistence['ext'] : [];
+        $ext = $sessionConfig['persistence']['ext'] ?? [];
 
         $instance = new self(
             ! empty($ext['non_locking']),
@@ -109,43 +122,19 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
         );
 
         // Get session cache ini settings
-        $instance->cacheLimiter = isset($session['cache_limiter']) && is_string($session['cache_limiter'])
-            ? $session['cache_limiter']
-            : ini_get('session.cache_limiter');
-        $instance->cacheExpire  = isset($session['cache_expire']) && is_int($session['cache_expire'])
-            ? $session['cache_expire']
-            : (int) ini_get('session.cache_expire');
+        $instance->cacheLimiter = $sessionConfig['cache_limiter'] ?? ini_get('session.cache_limiter');
+        $instance->cacheExpire  = $sessionConfig['cache_expire'] ?? (int) ini_get('session.cache_expire');
 
         // Get session cookie ini settings
-        $instance->cookieName     = isset($session['name']) && is_string($session['name'])
-            ? $session['name']
-            : ini_get('session.name');
-        $instance->cookieLifetime = isset($session['cookie_lifetime']) && is_int($session['cookie_lifetime'])
-            ? $session['cookie_lifetime']
-            : (int) ini_get('session.cookie_lifetime');
-        $instance->cookiePath     = isset($session['cookie_path']) && is_string($session['cookie_path'])
-            ? $session['cookie_path']
-            : ini_get('session.cookie_path');
-        $instance->cookieDomain   = isset($session['cookie_domain']) && is_string($session['cookie_domain'])
-            ? $session['cookie_domain']
-            : ini_get('session.cookie_domain');
-        $instance->cookieSecure   = isset($session['cookie_secure']) && is_bool($session['cookie_secure'])
-            ? $session['cookie_secure']
-            : (bool) filter_var(
-                ini_get('session.cookie_secure'),
-                FILTER_VALIDATE_BOOLEAN,
-                FILTER_NULL_ON_FAILURE
-            );
-        $instance->cookieHttpOnly = isset($session['cookie_httponly']) && is_bool($session['cookie_httponly'])
-            ? $session['cookie_httponly']
-            : (bool) filter_var(
-                ini_get('session.cookie_httponly'),
-                FILTER_VALIDATE_BOOLEAN,
-                FILTER_NULL_ON_FAILURE
-            );
-        $instance->cookieSameSite = isset($session['cookie_samesite']) && is_string($session['cookie_samesite'])
-            ? $session['cookie_samesite']
-            : ini_get('session.cookie_samesite');
+        $instance->cookieName     = $sessionConfig['name'] ?? ini_get('session.name');
+        $instance->cookieLifetime = $sessionConfig['cookie_lifetime'] ?? (int) ini_get('session.cookie_lifetime');
+        $instance->cookiePath     = $sessionConfig['cookie_path'] ?? ini_get('session.cookie_path');
+        $instance->cookieDomain   = $sessionConfig['cookie_domain'] ?? ini_get('session.cookie_domain');
+        $instance->cookieSecure   = $sessionConfig['cookie_secure']
+            ?? (bool) filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $instance->cookieHttpOnly = $sessionConfig['cookie_httponly']
+            ?? (bool) filter_var(ini_get('session.cookie_httponly'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $instance->cookieSameSite = $sessionConfig['cookie_samesite'] ?? ini_get('session.cookie_samesite');
 
         return $instance;
     }
