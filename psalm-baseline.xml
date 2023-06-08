@@ -42,6 +42,13 @@
     </PossiblyUnusedMethod>
   </file>
   <file src="test/PhpSessionPersistenceTest.php">
+    <InternalMethod>
+      <code>PhpSessionPersistence::fromConfigArray($session)</code>
+      <code>PhpSessionPersistence::fromConfigArray($session)</code>
+      <code>PhpSessionPersistence::fromConfigArray($session)</code>
+      <code>PhpSessionPersistence::fromConfigArray($session)</code>
+      <code>PhpSessionPersistence::fromConfigArray($session)</code>
+    </InternalMethod>
     <ArgumentTypeCoercion>
       <code>$request</code>
       <code>$request</code>

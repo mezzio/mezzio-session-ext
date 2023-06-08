@@ -903,7 +903,14 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function testNonLockingSessionIsClosedAfterInitialize(): void
     {
-        $persistence = new PhpSessionPersistence(true);
+        $session     = [
+            'persistence' => [
+                'ext' => [
+                    'non_locking' => true,
+                ],
+            ],
+        ];
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest('non-locking-session-id');
         $session = $persistence->initializeSessionFromRequest($request);
@@ -915,7 +922,14 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function testSessionIsOpenAfterInitializeWithFalseNonLockingSetting(): void
     {
-        $persistence = new PhpSessionPersistence(false);
+        $session     = [
+            'persistence' => [
+                'ext' => [
+                    'non_locking' => false,
+                ],
+            ],
+        ];
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest('locking-session-id');
         $session = $persistence->initializeSessionFromRequest($request);
@@ -932,7 +946,14 @@ class PhpSessionPersistenceTest extends TestCase
         $name  = 'non-locking-foo';
         $value = 'non-locking-bar';
 
-        $persistence = new PhpSessionPersistence(true);
+        $session     = [
+            'persistence' => [
+                'ext' => [
+                    'non_locking' => true,
+                ],
+            ],
+        ];
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest($sid);
         $session = $persistence->initializeSessionFromRequest($request);
@@ -958,7 +979,14 @@ class PhpSessionPersistenceTest extends TestCase
         $name  = 'regenerated-non-locking-foo';
         $value = 'regenerated-non-locking-bar';
 
-        $persistence = new PhpSessionPersistence(true);
+        $session     = [
+            'persistence' => [
+                'ext' => [
+                    'non_locking' => true,
+                ],
+            ],
+        ];
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
 
         $request = $this->createSessionCookieRequest($sid);
         $session = $persistence->initializeSessionFromRequest($request);
@@ -1033,7 +1061,15 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function testCookieIsDeletedFromBrowserIfSessionBecomesEmpty(): void
     {
-        $persistence = new PhpSessionPersistence(false, true);
+        $session     = [
+            'persistence' => [
+                'ext' => [
+                    'non_locking'                    => false,
+                    'delete_cookie_on_empty_session' => true,
+                ],
+            ],
+        ];
+        $persistence = PhpSessionPersistence::fromConfigArray($session);
         $session     = new Session(['foo' => 'bar']);
         $session->clear();
         $response = $persistence->persistSession($session, new Response());

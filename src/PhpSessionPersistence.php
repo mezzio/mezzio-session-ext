@@ -28,6 +28,24 @@ use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_SESSION_ACTIVE;
 
 /**
+ * @psalm-type SessionConfig = array{
+ *      persistence?: array{
+ *          ext?: array{
+ *              non_locking?: bool,
+ *              delete_cookie_on_empty_session?: bool,
+ *          }
+ *      },
+ *      cache_limiter?: string,
+ *      cache_expire?: int,
+ *      name?: string,
+ *      cookie_lifetime?: int,
+ *      cookie_path?: string,
+ *      cookie_domain?: string,
+ *      cookie_secure?: bool,
+ *      cookie_httponly?: bool,
+ *      cookie_samesite?: string,
+ * }
+ *
  * Session persistence using ext-session.
  *
  * Adapts ext-session to work with PSR-7 by disabling its auto-cookie creation
@@ -87,6 +105,38 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
             FILTER_NULL_ON_FAILURE
         );
         $this->cookieSameSite = ini_get('session.cookie_samesite');
+    }
+
+    /**
+     * @internal
+     *
+     * @param SessionConfig $sessionConfig
+     */
+    final public static function fromConfigArray(array $sessionConfig = []): self
+    {
+        $ext = $sessionConfig['persistence']['ext'] ?? [];
+
+        $instance = new self(
+            ! empty($ext['non_locking']),
+            ! empty($ext['delete_cookie_on_empty_session']),
+        );
+
+        // Get session cache ini settings
+        $instance->cacheLimiter = $sessionConfig['cache_limiter'] ?? ini_get('session.cache_limiter');
+        $instance->cacheExpire  = $sessionConfig['cache_expire'] ?? (int) ini_get('session.cache_expire');
+
+        // Get session cookie ini settings
+        $instance->cookieName     = $sessionConfig['name'] ?? ini_get('session.name');
+        $instance->cookieLifetime = $sessionConfig['cookie_lifetime'] ?? (int) ini_get('session.cookie_lifetime');
+        $instance->cookiePath     = $sessionConfig['cookie_path'] ?? ini_get('session.cookie_path');
+        $instance->cookieDomain   = $sessionConfig['cookie_domain'] ?? ini_get('session.cookie_domain');
+        $instance->cookieSecure   = $sessionConfig['cookie_secure']
+            ?? (bool) filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $instance->cookieHttpOnly = $sessionConfig['cookie_httponly']
+            ?? (bool) filter_var(ini_get('session.cookie_httponly'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $instance->cookieSameSite = $sessionConfig['cookie_samesite'] ?? ini_get('session.cookie_samesite');
+
+        return $instance;
     }
 
     /**

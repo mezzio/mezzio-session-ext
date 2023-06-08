@@ -37,14 +37,12 @@ class PhpSessionPersistenceFactory
     {
         $config = $container->has('config') ? $container->get('config') : [];
         assert(is_array($config) || $config instanceof ArrayAccess);
-        $session     = isset($config['session']) && is_array($config['session']) ? $config['session'] : [];
-        $persistence = isset($session['persistence']) && is_array($session['persistence'])
-            ? $session['persistence'] : [];
-        $options     = isset($persistence['ext']) && is_array($persistence['ext']) ? $persistence['ext'] : [];
 
-        return new PhpSessionPersistence(
-            ! empty($options['non_locking']),
-            ! empty($options['delete_cookie_on_empty_session'])
+        /**
+         * @psalm-suppress MixedArgumentTypeCoercion
+         */
+        return PhpSessionPersistence::fromConfigArray(
+            isset($config['session']) && is_array($config['session']) ? $config['session'] : []
         );
     }
 }
