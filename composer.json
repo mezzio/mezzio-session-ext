@@ -39,12 +39,12 @@
         "mezzio/mezzio-session": "^1.4"
     },
     "require-dev": {
-        "dflydev/fig-cookies": "^3.0",
+        "dflydev/fig-cookies": "^3.1",
         "laminas/laminas-coding-standard": "~2.5.0",
-        "laminas/laminas-diactoros": "^3.0",
-        "phpunit/phpunit": "^10.1.2",
+        "laminas/laminas-diactoros": "^3.3",
+        "phpunit/phpunit": "^10.5.10",
         "psalm/plugin-phpunit": "^0.18.4",
-        "vimeo/psalm": "^5.11"
+        "vimeo/psalm": "^5.21.1"
     },
     "autoload": {
         "psr-4": {
