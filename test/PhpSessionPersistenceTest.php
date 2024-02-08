@@ -33,6 +33,7 @@ use function ini_get;
 use function ini_set;
 use function is_bool;
 use function is_dir;
+use function is_string;
 use function mkdir;
 use function session_id;
 use function session_name;
@@ -89,7 +90,7 @@ class PhpSessionPersistenceTest extends TestCase
 
         // remove old session test files if any
         $files = glob("{$this->sessionSavePath}/sess_*");
-        if ($files) {
+        if ($files !== false) {
             foreach ($files as $file) {
                 unlink($file);
             }
@@ -98,7 +99,7 @@ class PhpSessionPersistenceTest extends TestCase
 
     public function startSession(?string $id = null, array $options = []): void
     {
-        $id = $id ?: 'testing';
+        $id ??= 'testing';
         session_id($id);
         session_start([
             'use_cookies'      => false,
@@ -115,8 +116,8 @@ class PhpSessionPersistenceTest extends TestCase
         $request = FigRequestCookies::set(
             new ServerRequest($serverParams),
             Cookie::create(
-                $sessionName ?: session_name(),
-                $sessionId ?: 'testing'
+                $sessionName ?? session_name(),
+                $sessionId ?? 'testing'
             )
         );
 
@@ -280,7 +281,9 @@ class PhpSessionPersistenceTest extends TestCase
         $this->assertSame(ini_get('session.cookie_path'), $setCookie->getPath());
 
         // @see https://github.com/zendframework/zend-expressive-session-ext/pull/31
-        $this->assertSame(ini_get('session.cookie_domain') ?: null, $setCookie->getDomain());
+        $iniDomain    = ini_get('session.cookie_domain');
+        $expectDomain = $iniDomain !== false && $iniDomain !== '' ? $iniDomain : null;
+        $this->assertSame($expectDomain, $setCookie->getDomain());
         $this->assertSame((bool) ini_get('session.cookie_secure'), $setCookie->getSecure());
         $this->assertSame((bool) ini_get('session.cookie_httponly'), $setCookie->getHttpOnly());
     }
@@ -578,7 +581,7 @@ class PhpSessionPersistenceTest extends TestCase
 
         $cookie = $response->getHeaderLine('Set-Cookie');
 
-        if ($sameSite) {
+        if (is_string($sameSite) && $sameSite !== '') {
             self::assertStringContainsStringIgnoringCase('SameSite=' . $sameSite, $cookie);
         } else {
             self::assertStringNotContainsStringIgnoringCase('SameSite=', $cookie);
@@ -1044,8 +1047,12 @@ class PhpSessionPersistenceTest extends TestCase
     {
         session_start();
 
+        $path = session_save_path() !== false
+            ? session_save_path()
+            : sys_get_temp_dir();
+
         $_SESSION['test'] = 'value';
-        $fileSession      = (session_save_path() ?: sys_get_temp_dir()) . '/sess_' . session_id();
+        $fileSession      = $path . '/sess_' . session_id();
 
         $this->assertFileExists($fileSession);
 
@@ -1100,6 +1107,6 @@ class PhpSessionPersistenceTest extends TestCase
             $lastmod   = filemtime($classFile);
         }
 
-        return $lastmod ? gmdate(Http::DATE_FORMAT, $lastmod) : false;
+        return $lastmod !== false ? gmdate(Http::DATE_FORMAT, $lastmod) : false;
     }
 }
