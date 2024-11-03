@@ -64,11 +64,6 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     use SessionCookieAwareTrait;
 
     /**
-     * Use non locking mode during session initialization?
-     */
-    private bool $nonLocking;
-
-    /**
      * Memorize session ini settings before starting the request.
      *
      * The cache_limiter setting is actually "stolen", as we will start the
@@ -80,9 +75,8 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
      * @param bool $nonLocking use the non locking mode during initialization?
      * @param bool $deleteCookieOnEmptySession delete cookie from browser when session becomes empty?
      */
-    public function __construct(bool $nonLocking = false, bool $deleteCookieOnEmptySession = false)
+    public function __construct(private bool $nonLocking = false, bool $deleteCookieOnEmptySession = false)
     {
-        $this->nonLocking                 = $nonLocking;
         $this->deleteCookieOnEmptySession = $deleteCookieOnEmptySession;
 
         // Get session cache ini settings
