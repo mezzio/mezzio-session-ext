@@ -28,6 +28,18 @@ use const FILTER_VALIDATE_BOOLEAN;
 use const PHP_SESSION_ACTIVE;
 
 /**
+ * Session persistence using ext-session.
+ *
+ * Adapts ext-session to work with PSR-7 by disabling its auto-cookie creation
+ * (`use_cookies => false`), while simultaneously requiring cookies for session
+ * handling (`use_only_cookies => true`). The implementation pulls cookies
+ * manually from the request, and injects a `Set-Cookie` header into the
+ * response.
+ *
+ * Session identifiers are generated using random_bytes (and casting to hex).
+ * During persistence, if the session regeneration flag is true, a new session
+ * identifier is created, and the session re-started.
+ *
  * @psalm-type SessionConfig = array{
  *      persistence?: array{
  *          ext?: array{
@@ -45,18 +57,6 @@ use const PHP_SESSION_ACTIVE;
  *      cookie_httponly?: bool,
  *      cookie_samesite?: string,
  * }
- *
- * Session persistence using ext-session.
- *
- * Adapts ext-session to work with PSR-7 by disabling its auto-cookie creation
- * (`use_cookies => false`), while simultaneously requiring cookies for session
- * handling (`use_only_cookies => true`). The implementation pulls cookies
- * manually from the request, and injects a `Set-Cookie` header into the
- * response.
- *
- * Session identifiers are generated using random_bytes (and casting to hex).
- * During persistence, if the session regeneration flag is true, a new session
- * identifier is created, and the session re-started.
  */
 class PhpSessionPersistence implements InitializePersistenceIdInterface, SessionPersistenceInterface
 {
