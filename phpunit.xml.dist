@@ -4,14 +4,10 @@
         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
         bootstrap="vendor/autoload.php"
         colors="true"
-        displayDetailsOnSkippedTests="true"
-        displayDetailsOnIncompleteTests="true"
-        displayDetailsOnTestsThatTriggerWarnings="true"
-        displayDetailsOnTestsThatTriggerNotices="true"
-        displayDetailsOnTestsThatTriggerDeprecations="true"
-        displayDetailsOnTestsThatTriggerErrors="true"
+        displayDetailsOnAllIssues="true"
+        failOnAllIssues="true"
 >
-    <source restrictDeprecations="true">
+    <source ignoreIndirectDeprecations="true">
         <include>
             <directory suffix=".php">./src</directory>
         </include>
@@ -23,5 +19,6 @@
     </testsuites>
     <php>
         <ini name="session.save_handler" value="files"/>
+        <ini name="session.use_cookies" value="1"/>
     </php>
 </phpunit>
