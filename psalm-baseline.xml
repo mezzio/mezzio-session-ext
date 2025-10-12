@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.11.0@c9b192ab8400fdaf04b2b13d110575adc879aa90">
+<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
   <file src="src/PhpSessionPersistence.php">
     <MixedArgument>
       <code><![CDATA[$session->getId()]]></code>
@@ -8,8 +8,20 @@
       <code><![CDATA[$session->toArray()]]></code>
     </MixedArgumentTypeCoercion>
     <MixedAssignment>
-      <code>$id</code>
+      <code><![CDATA[$id]]></code>
     </MixedAssignment>
+    <PossiblyFalsePropertyAssignmentValue>
+      <code><![CDATA[$sessionConfig['cache_limiter'] ?? ini_get('session.cache_limiter')]]></code>
+      <code><![CDATA[$sessionConfig['cookie_domain'] ?? ini_get('session.cookie_domain')]]></code>
+      <code><![CDATA[$sessionConfig['cookie_path'] ?? ini_get('session.cookie_path')]]></code>
+      <code><![CDATA[$sessionConfig['cookie_samesite'] ?? ini_get('session.cookie_samesite')]]></code>
+      <code><![CDATA[$sessionConfig['name'] ?? ini_get('session.name')]]></code>
+      <code><![CDATA[ini_get('session.cache_limiter')]]></code>
+      <code><![CDATA[ini_get('session.cookie_domain')]]></code>
+      <code><![CDATA[ini_get('session.cookie_path')]]></code>
+      <code><![CDATA[ini_get('session.cookie_samesite')]]></code>
+      <code><![CDATA[ini_get('session.name')]]></code>
+    </PossiblyFalsePropertyAssignmentValue>
     <PossiblyNullPropertyAssignmentValue>
       <code><![CDATA[filter_var(
             ini_get('session.cookie_httponly'),
@@ -23,78 +35,68 @@
         )]]></code>
     </PossiblyNullPropertyAssignmentValue>
     <UndefinedInterfaceMethod>
-      <code>getId</code>
-      <code>getId</code>
+      <code><![CDATA[getId]]></code>
+      <code><![CDATA[getId]]></code>
     </UndefinedInterfaceMethod>
   </file>
   <file src="test/ConfigProviderTest.php">
     <RedundantCondition>
-      <code>assertIsArray</code>
+      <code><![CDATA[assertIsArray]]></code>
     </RedundantCondition>
   </file>
   <file src="test/PhpSessionPersistenceFactoryTest.php">
     <InternalMethod>
-      <code>isDeleteCookieOnEmptySession</code>
-      <code>isNonLocking</code>
+      <code><![CDATA[isDeleteCookieOnEmptySession]]></code>
+      <code><![CDATA[isNonLocking]]></code>
     </InternalMethod>
-    <PossiblyUnusedMethod>
-      <code>configProvider</code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="test/PhpSessionPersistenceTest.php">
-    <InternalMethod>
-      <code>PhpSessionPersistence::fromConfigArray($session)</code>
-      <code>PhpSessionPersistence::fromConfigArray($session)</code>
-      <code>PhpSessionPersistence::fromConfigArray($session)</code>
-      <code>PhpSessionPersistence::fromConfigArray($session)</code>
-      <code>PhpSessionPersistence::fromConfigArray($session)</code>
-    </InternalMethod>
     <ArgumentTypeCoercion>
-      <code>$request</code>
-      <code>$request</code>
+      <code><![CDATA[$request]]></code>
+      <code><![CDATA[$request]]></code>
     </ArgumentTypeCoercion>
-    <InvalidArgument>
-      <code>$originalLifetime</code>
-    </InvalidArgument>
+    <InternalMethod>
+      <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
+      <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
+      <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
+      <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
+      <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
+    </InternalMethod>
     <MixedArgument>
       <code><![CDATA[$setCookie->getValue()]]></code>
       <code><![CDATA[$setCookie->getValue()]]></code>
-      <code>$value</code>
+      <code><![CDATA[$value]]></code>
     </MixedArgument>
     <MixedArgumentTypeCoercion>
-      <code>$key</code>
+      <code><![CDATA[$key]]></code>
     </MixedArgumentTypeCoercion>
     <MixedAssignment>
-      <code>$setCookie</code>
-      <code>$value</code>
-      <code>$value</code>
+      <code><![CDATA[$setCookie]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
     </MixedAssignment>
     <MixedMethodCall>
-      <code>getHttpOnly</code>
-      <code>getSecure</code>
-      <code>getValue</code>
-      <code>getValue</code>
+      <code><![CDATA[getHttpOnly]]></code>
+      <code><![CDATA[getSecure]]></code>
+      <code><![CDATA[getValue]]></code>
+      <code><![CDATA[getValue]]></code>
     </MixedMethodCall>
     <NullArgument>
-      <code>$_SESSION</code>
+      <code><![CDATA[$_SESSION]]></code>
     </NullArgument>
     <NullArrayAccess>
-      <code>$_SESSION[$name]</code>
+      <code><![CDATA[$_SESSION[$name]]]></code>
     </NullArrayAccess>
-    <PossiblyUnusedMethod>
-      <code>cookieSettingsProvider</code>
-      <code>sameSitePossibleValues</code>
-    </PossiblyUnusedMethod>
     <TypeDoesNotContainType>
-      <code>assertSame</code>
+      <code><![CDATA[assertSame]]></code>
     </TypeDoesNotContainType>
     <UndefinedInterfaceMethod>
-      <code>getId</code>
-      <code>getId</code>
-      <code>getId</code>
-      <code>getId</code>
-      <code>persistSessionFor</code>
-      <code>persistSessionFor</code>
+      <code><![CDATA[getId]]></code>
+      <code><![CDATA[getId]]></code>
+      <code><![CDATA[getId]]></code>
+      <code><![CDATA[getId]]></code>
+      <code><![CDATA[persistSessionFor]]></code>
+      <code><![CDATA[persistSessionFor]]></code>
     </UndefinedInterfaceMethod>
   </file>
 </files>

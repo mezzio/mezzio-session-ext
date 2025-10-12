@@ -6,6 +6,7 @@ namespace Mezzio\Session\Ext;
 
 use Mezzio\Session\SessionPersistenceInterface;
 
+/** @final */
 class ConfigProvider
 {
     public function __invoke(): array

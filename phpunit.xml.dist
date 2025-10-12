@@ -11,7 +11,7 @@
         displayDetailsOnTestsThatTriggerDeprecations="true"
         displayDetailsOnTestsThatTriggerErrors="true"
 >
-    <source>
+    <source restrictDeprecations="true">
         <include>
             <directory suffix=".php">./src</directory>
         </include>
