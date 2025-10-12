@@ -642,7 +642,7 @@ final class PhpSessionPersistenceTest extends TestCase
 
     public function testAllowsSessionToSpecifyLifetime(): void
     {
-        $originalLifetime = ini_get('session.cookie_lifetime');
+        $originalLifetime = (int) ini_get('session.cookie_lifetime');
 
         $persistence = new PhpSessionPersistence();
         $request     = new ServerRequest();
