@@ -62,9 +62,6 @@
       <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
       <code><![CDATA[PhpSessionPersistence::fromConfigArray($session)]]></code>
     </InternalMethod>
-    <InvalidArgument>
-      <code><![CDATA[$originalLifetime]]></code>
-    </InvalidArgument>
     <MixedArgument>
       <code><![CDATA[$setCookie->getValue()]]></code>
       <code><![CDATA[$setCookie->getValue()]]></code>
