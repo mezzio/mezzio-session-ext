@@ -38,7 +38,6 @@ use function mkdir;
 use function session_id;
 use function session_name;
 use function session_save_path;
-use function session_set_cookie_params;
 use function session_start;
 use function session_status;
 use function session_write_close;
@@ -642,8 +641,6 @@ final class PhpSessionPersistenceTest extends TestCase
 
     public function testAllowsSessionToSpecifyLifetime(): void
     {
-        $originalLifetime = (int) ini_get('session.cookie_lifetime');
-
         $persistence = new PhpSessionPersistence();
         $request     = new ServerRequest();
         $session     = $persistence->initializeSessionFromRequest($request);
@@ -663,9 +660,6 @@ final class PhpSessionPersistenceTest extends TestCase
 
         $this->assertGreaterThanOrEqual($expiresMin, $expires);
         $this->assertLessThanOrEqual($expiresMax, $expires);
-
-        // reset lifetime
-        session_set_cookie_params($originalLifetime);
     }
 
     public function testAllowsSessionToOverrideDefaultLifetime(): void
