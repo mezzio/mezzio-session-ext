@@ -57,6 +57,7 @@ use const PHP_SESSION_ACTIVE;
  *      cookie_httponly?: bool,
  *      cookie_samesite?: string,
  * }
+ * @final
  */
 class PhpSessionPersistence implements InitializePersistenceIdInterface, SessionPersistenceInterface
 {

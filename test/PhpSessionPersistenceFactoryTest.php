@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class PhpSessionPersistenceFactoryTest extends TestCase
+final class PhpSessionPersistenceFactoryTest extends TestCase
 {
     public function testFactoryProducesPhpSessionPersistenceServiceWithDefaultsInAbsenceOfConfig(): void
     {
@@ -30,6 +30,7 @@ class PhpSessionPersistenceFactoryTest extends TestCase
         $this->assertFalse($persistence->isDeleteCookieOnEmptySession());
     }
 
+    /** @return iterable<string, array{config: array, expected: bool, methodToTest: string}> */
     public static function configProvider(): iterable
     {
         yield 'non_locking disabled' => [
