@@ -171,18 +171,34 @@ final class PhpSessionPersistenceTest extends TestCase
         $this->assertFalse(isset($_SESSION));
     }
 
-    public function testInitializeSessionFromRequestUsesSessionCookieFromRequest(): void
+    /**
+     * Create a session id that is valid in situations where session.use_strict_mode is on (The default from 8.6)
+     */
+    private function createSessionId(): string
     {
         $this->assertSame(PHP_SESSION_NONE, session_status());
+        session_start(['read_and_close' => true]);
+        $newId = session_id();
+        $this->assertNotFalse($newId);
+        $this->assertSame(PHP_SESSION_NONE, session_status());
 
-        $request = $this->createSessionCookieRequest('use-this-id');
+        return $newId;
+    }
+
+    public function testInitializeSessionFromRequestUsesSessionCookieFromRequest(): void
+    {
+        $newId = $this->createSessionId();
+
+        $this->assertSame(PHP_SESSION_NONE, session_status());
+
+        $request = $this->createSessionCookieRequest($newId);
         $session = $this->persistence->initializeSessionFromRequest($request);
 
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
         $this->assertInstanceOf(Session::class, $session);
         $this->assertTrue(isset($_SESSION));
         $this->assertSame($_SESSION, $session->toArray());
-        $this->assertSame('use-this-id', $this->sessionId());
+        $this->assertSame($newId, $this->sessionId());
     }
 
     public function testPersistSessionStartsPhpSessionEvenIfNoSessionCookiePresentButSessionChanged(): void
@@ -266,8 +282,9 @@ final class PhpSessionPersistenceTest extends TestCase
      */
     public function testPersistSessionReturnsResponseWithSetCookieHeaderIfSessionCookiePresent(): void
     {
-        $request = $this->createSessionCookieRequest('use-this-id');
-        $session = $this->persistence->initializeSessionFromRequest($request);
+        $sessionId = $this->createSessionId();
+        $request   = $this->createSessionCookieRequest($sessionId);
+        $session   = $this->persistence->initializeSessionFromRequest($request);
         $session->set('foo', __METHOD__);
         $this->assertInstanceOf(SessionIdentifierAwareInterface::class, $session);
 
@@ -882,16 +899,17 @@ final class PhpSessionPersistenceTest extends TestCase
 
     public function testHeadersAreNotSentIfReloadedSessionDidNotChange(): void
     {
+        $sessionId = $this->createSessionId();
         $this->assertSame(PHP_SESSION_NONE, session_status());
 
-        $request = $this->createSessionCookieRequest('reloaded-session');
+        $request = $this->createSessionCookieRequest($sessionId);
         $session = $this->persistence->initializeSessionFromRequest($request);
 
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
         $this->assertInstanceOf(Session::class, $session);
         $this->assertTrue(isset($_SESSION));
         $this->assertSame($_SESSION, $session->toArray());
-        $this->assertSame('reloaded-session', $this->sessionId());
+        $this->assertSame($sessionId, $this->sessionId());
 
         $response         = new Response();
         $returnedResponse = $this->persistence->persistSession($session, $response);
@@ -911,7 +929,7 @@ final class PhpSessionPersistenceTest extends TestCase
         ];
         $persistence = PhpSessionPersistence::fromConfigArray($session);
 
-        $request = $this->createSessionCookieRequest('non-locking-session-id');
+        $request = $this->createSessionCookieRequest();
         $session = $persistence->initializeSessionFromRequest($request);
 
         $this->assertInstanceOf(SessionIdentifierAwareInterface::class, $session);
@@ -930,7 +948,7 @@ final class PhpSessionPersistenceTest extends TestCase
         ];
         $persistence = PhpSessionPersistence::fromConfigArray($session);
 
-        $request = $this->createSessionCookieRequest('locking-session-id');
+        $request = $this->createSessionCookieRequest();
         $session = $persistence->initializeSessionFromRequest($request);
 
         $this->assertInstanceOf(SessionIdentifierAwareInterface::class, $session);
@@ -940,7 +958,7 @@ final class PhpSessionPersistenceTest extends TestCase
 
     public function testNonLockingSessionDataIsPersisted(): void
     {
-        $sid = 'non-locking-session-id';
+        $sid = $this->createSessionId();
 
         $name  = 'non-locking-foo';
         $value = 'non-locking-bar';
