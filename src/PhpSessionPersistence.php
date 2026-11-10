@@ -147,7 +147,7 @@ class PhpSessionPersistence implements InitializePersistenceIdInterface, Session
     public function initializeSessionFromRequest(ServerRequestInterface $request): SessionInterface
     {
         $sessionId = $this->getSessionCookieValueFromRequest($request);
-        if ($sessionId) {
+        if ($sessionId !== '') {
             $this->startSession($sessionId, [
                 'read_and_close' => $this->nonLocking,
             ]);
